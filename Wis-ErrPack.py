@@ -39,14 +39,17 @@ def ErrMsg( MESSAG, FATAL ):
     
     NUMMSG = NUMMSG + 1
     
-    if MSGLIM: 
-        break
+    while True:
+        if MSGLIM: 
+            break
     
-    if NUMMSG <= MAXMSG:
-        print '******WARNING***** ', MESSAG    
-    else:
-        print '****** TOO MANY WARNING MESSAGES -- They will no longer be printed *******'
-        MSGLIM = True
+        if NUMMSG <= MAXMSG:
+            print '******WARNING***** ', MESSAG
+            break
+        else:
+            print '****** TOO MANY WARNING MESSAGES -- They will no longer be printed *******'
+            MSGLIM = True
+            break
 
 
 # In[11]:
