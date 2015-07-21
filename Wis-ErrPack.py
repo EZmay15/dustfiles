@@ -39,6 +39,7 @@ def ErrMsg( MESSAG, FATAL ):
     
     NUMMSG = NUMMSG + 1
     
+    #while True loop allows MSGLIM condition to end the function with a break
     while True:
         if MSGLIM: 
             break
