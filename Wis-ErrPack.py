@@ -53,7 +53,6 @@ def ErrMsg( MESSAG, FATAL ):
             break
 
 
-# In[11]:
 
 def WrtBad( VarNam ):
     
@@ -88,7 +87,6 @@ def WrtBad( VarNam ):
         ErrMsg('Too many input errors. Aborting...', True)
 
 
-# In[12]:
 
 def WrtDim( DimNam, Minval ): 
     
@@ -110,7 +108,6 @@ def WrtDim( DimNam, Minval ):
     return True
 
 
-# In[13]:
 
 def TstBad( VarNam, RelErr ):
 
