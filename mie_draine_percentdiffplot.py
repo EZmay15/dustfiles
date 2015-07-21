@@ -28,7 +28,7 @@ mie_model = sm.Mie()
 # In[ ]:
 
 GRAIN_RAD = 0.5
-tabl = ascii.read("graphite0.5")
+tabl = ascii.read("draine-graphite0.5")
 
 
 # In[ ]:
