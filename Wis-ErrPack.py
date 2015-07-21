@@ -40,7 +40,7 @@ def ErrMsg( MESSAG, FATAL ):
     NUMMSG = NUMMSG + 1
     
     if MSGLIM: 
-        return
+        break
     
     if NUMMSG <= MAXMSG:
         print '******WARNING***** ', MESSAG    
