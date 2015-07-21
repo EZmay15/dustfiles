@@ -347,7 +347,7 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
             TFORW( 1 ) = TFORW( 1 ) + TCOEF  * ( AN - BN )
             SBACK      = SBACK      + ( MM * TWONP1 ) * ( AN - BN )
             TBACK( 1 ) = TBACK( 1 ) + ( MM * TCOEF )  * ( AN + BN )
-            GQSC       = GQSC + (FN - RN) * REAL(ANM1 * CONJG(AN) + BNM1 * CONJG(BN)) + 
+            GQSC       = GQSC + (FN - RN) * REAL(ANM1 * CONJG(AN) + BNM1 * CONJG(BN)) + \
                              COEFF * REAL( AN * CONJG( BN ) )
     
     
@@ -428,10 +428,10 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
         #Recover scattering amplitudes from S+, S- ( Ref. 1, Eq. 11 )
             
             if ANYANG:
-            #vectorizable loop
-            for J in range(1, NUMANG + 1):
-                S1( J ) = 0.5*( SP( J ) + SM( J ) )
-                S2( J ) = 0.5*( SP( J ) - SM( J ) )
+                #vectorizable loop
+                for J in range(1, NUMANG + 1):
+                    S1( J ) = 0.5*( SP( J ) + SM( J ) )
+                    S2( J ) = 0.5*( SP( J ) - SM( J ) )
     
             else:
                 #vectorizable loop
