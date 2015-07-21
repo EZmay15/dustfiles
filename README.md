@@ -1,2 +1,2 @@
 # dustfiles
-iPython notebook plotting, Draine's data, Wiscombe code in Fortran & its translation
+Plots of data vs. Mie model, Draine's data, Python translation of Wiscombe's Fortran code
