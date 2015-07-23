@@ -266,7 +266,7 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
             #Initialize angular function  pi and sums for S+, S- ( Ref. 2, p. 1507 )
             if ANYANG:
                 
-                for J in range( 1, NUMANG + 1 ):
+                for J in range( 0, NUMANG ):
                     PINM1[ J ] = 0.0
                     PIN[ J ]   = 1.0
                     SP[ J ]    = 0.0 + 0.0j
@@ -274,7 +274,7 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
         
             else:
                 
-                for J in range( 1, NANGD2 + 1 ):
+                for J in range( 0, NANGD2 ):
                     PINM1[ J ] = 0.0
                     PIN[ J ]   = 1.0
                     SP [ J ]   = 0.0 + 0.0j
@@ -297,14 +297,14 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
             MM     = 1.0
             SPIKE  = 1.0
     
-            for N in range( 1, NTRM + 1 ):
+            for N in range( 0, NTRM ):
             #Compute various numerical coefficients
-                FN     = N
+                FN     = N + 1
                 RN     = 1.0 / FN
                 NP1DN  = 1.0 + RN
-                TWONP1 = 2*N + 1
-                COEFF  = TWONP1 / ( FN*( N + 1 ) )
-                TCOEF  = TWONP1*( FN*( N + 1 ) )
+                TWONP1 = 2*(N + 1) + 1
+                COEFF  = TWONP1 / ( FN*( N + 1 + 1 ) )
+                TCOEF  = TWONP1*( FN*( N + 1 + 1 ) )
                 
                 #Calculate Mie series coefficients
                 if PERFCT:
@@ -369,7 +369,7 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
                         #Arbitrary angles
     
                         #vectorizable loop
-                        for J in range( 1, NUMANG + 1 ):
+                        for J in range( 0, NUMANG ):
                             RTMP = ( XMU[ J ] * PIN[ J ] ) - PINM1[ J ]
                             TAUN =  FN * RTMP - PINM1[ J ]
                             SP[ J ]  = SP[ J ] + ANP * ( PIN[ J ] + TAUN )
@@ -382,7 +382,7 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
                         ANPM   = MM * ANP
                         BNPM   = MM * BNP
                         #vectorizable loop
-                        for J in range( 1, NANGD2 + 1 ):
+                        for J in range( 0, NANGD2 ):
                             RTMP = ( XMU[ J ] * PIN[ J ] ) - PINM1[ J ]
                             TAUN =  FN * RTMP - PINM1[ J ]
                             SP [ J ] = SP [ J ] +  ANP * ( PIN[ J ] + TAUN )
@@ -435,20 +435,23 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
             
                 if ANYANG:
                     #vectorizable loop
-                    for J in range( 1, NUMANG + 1 ):
+                    for J in range( 0, NUMANG ):
                         S1[ J ] = 0.5*( SP[ J ] + SM[ J ] )
                         S2[ J ] = 0.5*( SP[ J ] - SM[ J ] )
     
                 else:
                     #vectorizable loop
-                    for J in range( 1, NANGD2 + 1 ):
+                    for J in range( 0, NANGD2 ):
                         S1[ J ] = 0.5*( SP[ J ] + SM[ J ] )
                         S2[ J ] = 0.5*( SP[ J ] - SM[ J ] )
                         
                     #vectorizable loop
-                    for J in range( 1, NANGD2 + 1 ):
-                        S1[ NUMANG + 1 - J ] = 0.5*( SPS[ J ] + SMS[ J ] )
-                        S2[ NUMANG + 1 - J ] = 0.5*( SPS[ J ] - SMS[ J ] )
+                    for J in range( 0, NANGD2 ):
+                        S1[ NUMANG - J ] = 0.5*( SPS[ J ] + SMS[ J ] )
+                        S2[ NUMANG - J ] = 0.5*( SPS[ J ] - SMS[ J ] )
+#with range 1 to nangd2 + 1, code used to be S1[ NUMANG + 1 - J ] = 0.5*( SPS[ J ] + SMS[ J ] )
+#                                            S2[ NUMANG + 1 - J ] = 0.5*( SPS[ J ] - SMS[ J ] )
+                        
 
             break
             #end of while loop representing the go-to/continue labeled 100 in the Fortran code
@@ -464,11 +467,11 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
             SFORW  = np.conjugate( SFORW )
             SBACK  = np.conjugate( SBACK )
     
-            for I in range( 1, 2 + 1 ):
+            for I in range( 0, 2 ):
                 TFORW[ I ] = np.conjugate( TFORW[ I ] )
                 TBACK[ I ] = np.conjugate( TBACK[ I ] )
     
-            for J in range( 1, NUMANG + 1 ):
+            for J in range( 0, NUMANG ):
                 S1[ J ] = np.conjugate( S1[ J ] )
                 S2[ J ] = np.conjugate( S2[ J ] )
                     
@@ -565,7 +568,7 @@ def CKINMI( NUMANG, MAXANG, XX, PERFCT, CREFIN, MOMDIM, NMOM, IPOLZN,
     
         NPQUAN = 0
     
-        for L in range( 1, 4 + 1 ):
+        for L in range( 0, 4 ):
             CALCMO[ L ] = False
     
         if IPOLZN != 0:
@@ -588,14 +591,14 @@ def CKINMI( NUMANG, MAXANG, XX, PERFCT, CREFIN, MOMDIM, NMOM, IPOLZN,
         
     if ANYANG:
         #Allow for slight imperfections in computation of cosine
-        for I in range( 1, NUMANG + 1 ):
+        for I in range( 0, NUMANG ):
     
             if XMU[ I ] < -1.00001 or XMU[ I ] > 1.00001:
                 INPERR = WRTBAD( 'XMU' )
     
     else:
             
-        for I in range( 1, ( ( NUMANG + 1 ) / 2 ) + 1 ):
+        for I in range( 0, ( NUMANG + 1 ) / 2 ):
     
             if XMU[ I ] < -0.00001 or XMU[ I ] > 1.00001:
                 INPERR = WRTBAD( 'XMU' )
@@ -733,8 +736,8 @@ def LPCOEF( NTRM, NMOM, IPOLZN, MOMDIM, CALCMO, NPQUAN, A, B, PMOM ):
         
     if PASS1:
     
-        for K in range( 1, MAXRCP + 1 ):
-            RECIP[ K ] = 1.0 / K
+        for K in range( 0, MAXRCP ):
+            RECIP[ K ] = 1.0 / ( K + 1 )
     
         PASS1  = False
     
@@ -766,7 +769,7 @@ def LPCOEF( NTRM, NMOM, IPOLZN, MOMDIM, CALCMO, NPQUAN, A, B, PMOM ):
     DM[ NTRM ] = ( RECIP[ NTRM ] + RECIP[ NTRM+1 ] ) * B[ NTRM ] + \
                       ( 1. - RECIP[ NTRM ] )*A[ NTRM-1 ]
     
-    for K in range( NTRM-1, 2 - 1, -1 ):
+    for K in range( NTRM - 1 - 1, 2 - 1 - 1 , -1 ):
         CM[ K ] = CM[ K+2 ] - ( 1. + RECIP[ K+1 ] ) * B[ K+1 ] + ( RECIP[ K ] + \
                       RECIP[ K+1 ] ) * A[ K ] + ( 1. - RECIP[ K ] ) * B[ K-1 ]
         DM[ K ] = DM[ K+2 ] - ( 1. + RECIP[ K+1 ] ) * A[ K+1 ] + ( RECIP[ K ] + \
@@ -778,9 +781,9 @@ def LPCOEF( NTRM, NMOM, IPOLZN, MOMDIM, CALCMO, NPQUAN, A, B, PMOM ):
     
     if IPOLZN >= 0:
     
-        for K in range( 1, NTRM + 2 + 1 ):
-            C[ K ] = ( 2*K - 1 ) * CM[ K ]
-            D[ K ] = ( 2*K - 1 ) * DM[ K ]
+        for K in range( 0, NTRM + 2 ):
+            C[ K ] = ( 2*( K + 1 ) - 1 ) * CM[ K ]
+            D[ K ] = ( 2*( K + 1 ) - 1 ) * DM[ K ]
     
     else:
         #Compute Sekera C and D arrays
@@ -789,13 +792,13 @@ def LPCOEF( NTRM, NMOM, IPOLZN, MOMDIM, CALCMO, NPQUAN, A, B, PMOM ):
         CS[ NTRM + 1 ] = 0. + 0.j
         DS[ NTRM + 1 ] = 0. + 0.j
     
-        for K in range( NTRM, 1 - 1, -1 ):
-            CS[ K ] = CS[ K+2 ] + ( 2*K + 1 ) * ( CM[ K+1 ] - B[ K ] )
-            DS[ K ] = DS[ K+2 ] + ( 2*K + 1 ) * ( DM[ K+1 ] - A[ K ] )
+        for K in range( NTRM - 1, 1 - 1 - 1, -1 ):
+            CS[ K ] = CS[ K+2 ] + ( 2*( K + 1 ) + 1 ) * ( CM[ K+1 ] - B[ K ] )
+            DS[ K ] = DS[ K+2 ] + ( 2*( K + 1 ) + 1 ) * ( DM[ K+1 ] - A[ K ] )
     
-        for K in range( 1, NTRM + 2 + 1 ):
-            C[ K ] = ( 2*K - 1 ) * CS[ K ]
-            D[ K ] = ( 2*K - 1 ) * DS[ K ]
+        for K in range( 0, NTRM + 2 ):
+            C[ K ] = ( 2*( K + 1 ) - 1 ) * CS[ K ]
+            D[ K ] = ( 2*( K + 1 ) - 1 ) * DS[ K ]
     
     
     if IPOLZN < 0:
@@ -843,7 +846,7 @@ def LPCOEF( NTRM, NMOM, IPOLZN, MOMDIM, CALCMO, NPQUAN, A, B, PMOM ):
             for M in range( LD2, NTRM + 1 ):
                 AM[ M ] = ( 1. - RECIP[ 2*M + L + 2 ] ) * AM[ M ]
     
-            for I in range( 0, LD2 +1 ):
+            for I in range( 0, LD2 - 1 + 1 ):
                 BI[ I ] = ( 1. - RECIP[ L + 2*I + 1 ] ) * BI[ I ]
     
                     
@@ -872,7 +875,7 @@ def LPCOEF( NTRM, NMOM, IPOLZN, MOMDIM, CALCMO, NPQUAN, A, B, PMOM ):
     
                 SUM = 0.0
     
-                for M in range( LD2, MMAX - I + 1 ):
+                for M in range( LD2 - 1, MMAX - I ):
                     SUM = SUM + AM[ M ] * ( np.real( C[ M-I+1 ] * np.conjugate( C[ M + I + \
                             IDEL ] ) ) + np.real( D[ M-I+1 ] * np.conjugate( D[ M+I+IDEL ] ) ) )
     
@@ -892,7 +895,7 @@ def LPCOEF( NTRM, NMOM, IPOLZN, MOMDIM, CALCMO, NPQUAN, A, B, PMOM ):
                 SUM = 0.0
                 #vectorizable loop
                 for M in range( LD2, MMAX - I + 1 ):
-                    SUM = SUM + AM[ M ] * np.real( C[ M-I+1 ] * np.conjugate( C[ M+I+IDEL ] ) )
+                    SUM = SUM + AM[ M ] * np.real( C[ M-I ] * np.conjugate( C[ M+I+IDEL - 1 ] ) )
     
                 PMOM[ L, 1 ] = PMOM[ L, 1 ] + BIDEL[ I ] * SUM
     
@@ -904,7 +907,7 @@ def LPCOEF( NTRM, NMOM, IPOLZN, MOMDIM, CALCMO, NPQUAN, A, B, PMOM ):
                 SUM = 0.0
                 #vectorizable loop
                 for M in range( LD2, MMAX - I + 1 ):
-                    SUM = SUM + AM[ M ] * np.real( D[ M-I+1 ] * np.conjugate( D[ M+I+IDEL ] ) )
+                    SUM = SUM + AM[ M ] * np.real( D[ M-I ] * np.conjugate( D[ M+I+IDEL - 1] ) )
     
                 PMOM[ L, 2 ] = PMOM[ L, 2 ] + BIDEL[ I ] * SUM
     
@@ -916,8 +919,8 @@ def LPCOEF( NTRM, NMOM, IPOLZN, MOMDIM, CALCMO, NPQUAN, A, B, PMOM ):
                 SUM = 0.0
                 #vectorizable loop
                 for M in range( LD2, MMAX - I + 1 ):
-                    SUM = SUM + AM[ M ] * ( np.real( C[ M-I+1 ] * np.conjugate( D[ M + I + \
-                            IDEL ] ) ) + np.real( C[ M+I+IDEL ] * np.conjugate( D[ M-I+1 ] ) ) )
+                    SUM = SUM + AM[ M ] * ( np.real( C[ M-I ] * np.conjugate( D[ M + I + IDEL - \
+                            1 ] ) ) + np.real( C[ M+I+IDEL - 1 ] * np.conjugate( D[ M-I ] ) ) )
     
                 PMOM[ L, 3 ] = PMOM[ L, 3 ] + BIDEL[ I ] * SUM
     
@@ -932,8 +935,8 @@ def LPCOEF( NTRM, NMOM, IPOLZN, MOMDIM, CALCMO, NPQUAN, A, B, PMOM ):
                 SUM= 0.0
                 #vectorizable loop
                 for M in range( LD2, MMAX - I + 1 ):
-                    SUM = SUM + AM[ M ] * ( np,imag( C[ M-I+1 ] * np.conjugate( D[ M + I + \
-                            IDEL ] ) ) + np.imag( C[ M+I+IDEL ] * np.conjugate( D[ M-I+1 ] ) ) )
+                    SUM = SUM + AM[ M ] * ( np.imag( C[ M-I ] * np.conjugate( D[ M + I + IDEL - \
+                            1 ] ) ) + np.imag( C[ M+I+IDEL - 1 ] * np.conjugate( D[ M-I ] ) ) )
     
                 PMOM[ L, 4 ] = PMOM[ L, 4 ] + BIDEL[ I ] * SUM
     
@@ -1407,15 +1410,15 @@ def BIGA( CIOR, XX, NTRM, NOABS, YESANG, RBIGA, CBIGA ):
             #No-absorption case
             RBIGA[ NTRM ] = np.real( CTMP )
                 
-            for N in range( NTRM, 2 - 1, -1 ):
-                RBIGA[ N - 1 ] = ( N*REZINV ) - 1.0 / ( ( N*REZINV ) + RBIGA[ N ] )
+            for N in range( NTRM - 1, 2 - 1 - 1, -1 ):
+                RBIGA[ N - 1 ] = ( (N + 1)*REZINV ) - 1.0 / ( ( (N + 1)*REZINV ) + RBIGA[ N ] )
     
         else:
             #Absorptive case
             CBIGA[ NTRM ] = CTMP
     
-            for N in range(NTRM, 2 - 1, -1):
-                CBIGA[ N-1 ] = ( N*ZINV ) - 1.0 / ( ( N*ZINV ) + CBIGA[ N ] )
+            for N in range(NTRM - 1, 2 - 1 - 1, -1):
+                CBIGA[ N-1 ] = ( (N + 1)*ZINV ) - 1.0 / ( ( (N + 1)*ZINV ) + CBIGA[ N ] )
     
                     
     else:
@@ -1425,8 +1428,8 @@ def BIGA( CIOR, XX, NTRM, NOABS, YESANG, RBIGA, CBIGA ):
             RTMP   = np.sin( MRE*XX )
             RBIGA[ 1 ] = -REZINV + RTMP /( RTMP*REZINV - np.cos( MRE*XX ) )
     
-            for N in range( 2, NTRM + 1 ):
-                RBIGA[ N ] = -( N*REZINV ) + 1.0 / ( ( N*REZINV ) - RBIGA[ N - 1 ] )
+            for N in range( 1, NTRM ):
+                RBIGA[ N ] = -( (N + 1)*REZINV ) + 1.0 / ( ( (N + 1)*REZINV ) - RBIGA[ N - 1 ] )
     
         else:
             #Absorptive case
@@ -1434,8 +1437,8 @@ def BIGA( CIOR, XX, NTRM, NOABS, YESANG, RBIGA, CBIGA ):
             CBIGA[ 1 ] = - ZINV + ( 1.-CTMP ) /( ZINV * ( 1.-CTMP ) - \
                              complex( 0., 1. )*( 1.+CTMP ) )
     
-            for N in range( 2, NTRM + 1 ):
-                CBIGA[ N ] = - ( N*ZINV ) + 1.0 / ( ( N*ZINV ) - CBIGA[ N-1 ] )
+            for N in range( 1, NTRM ):
+                CBIGA[ N ] = - ( (N + 1)*ZINV ) + 1.0 / ( ( (N + 1)*ZINV ) - CBIGA[ N-1 ] )
               
             
             
@@ -1602,10 +1605,10 @@ def MIPRNT( PRNT, XX, PERFCT, CREFIN, NUMANG, XMU, QEXT, QSCA, GQSC, NMOM, IPOLZ
         print '  --- S1*conjg(S2) ---   i1=S1**2   i2=S2**2  (i1+i2)/2'
         print '  DEG POLZN'
             
-        for I in range( 1, NUMANG + 1 ):
+        for I in range( 0, NUMANG ):
             I1     = np.real( S1[ I ] )**2 + np.imag( S1[ I ] )**2
             I2     = np.real( S2[ I ] )**2 + np.imag( S2[ I ] )**2
-            print  I, XMU[ I ], S1[ I ], S2[ I ], S1[ I ]*np.conjugate( S2[ I ] ) 
+            print  (I + 1), XMU[ I ], S1[ I ], S2[ I ], S1[ I ]*np.conjugate( S2[ I ] ) 
             print  I1, I2, 0.5*( I1+I2 ), ( I2-I1 )/( I2+I1 )
                     
                     
@@ -1722,7 +1725,7 @@ def SMALL1(XX, NUMANG, XMU, QEXT, QSCA, GQSC, SFORW, SBACK, S1, S2, TFORW, TBACK
     TBACK[ 2 ] = RTMP*( A[ 1 ] - FIVTHR * ( 2.*A[ 2 ] + B[ 2 ] ) )
         
         
-    for J in range( 1, NUMANG + 1 ):
+    for J in range( 0, NUMANG ):
         S1[ J ] = RTMP*( A[ 1 ] + B[ 1 ]*XMU[ J ] + FIVTHR*( A[ 2 ]*XMU[ J ] + 
                     B[ 2 ]*( 2.*XMU[ J ]**2 - 1.) ) )
         S2[ J ] = RTMP*( B[ 1 ] + A[ 1 ]*XMU[ J ] + FIVTHR*( B[ 2 ]*XMU[ J ] + 
@@ -1822,7 +1825,7 @@ def SMALL2( XX, CIOR, CALCQE, NUMANG, XMU, QEXT, QSCA, GQSC, SFORW,
     TBACK[ 2 ] = RTMP*( A[ 1 ] - 2.*FIVTHR*A[ 2 ] )
         
         
-    for J in range( 1, NUMANG + 1 ):
+    for J in range( 0, NUMANG ):
         S1[ J ] = RTMP*( A[ 1 ] + ( B[ 1 ] + FIVTHR*A[ 2 ] )*XMU[ J ] )
         S2[ J ] = RTMP*( B[ 1 ] + A[ 1 ]*XMU[ J ] + FIVTHR * A[ 2 ]*( 2.*XMU[ J ]**2 - 1. ) )
         
@@ -1993,7 +1996,7 @@ def TESTMI( COMPAR, XX, CREFIN, MIMCUT, PERFCT, ANYANG, NMOM, IPOLZN, NUMANG, XM
             OK = TSTBAD( 'S2', abs( ( S2[ 1 ] - TESTS2 ) / TESTS2 ) )
                 
                 
-        for N in range( 1, 2 + 1 ):
+        for N in range( 0, 2 ):
     
             if WRONG( np.real( TFORW[ N ] ), np.real( TESTTF[ N ] ) ) or \
                     WRONG( np.imag( TFORW[ N ] ), np.imag( TESTTF[ N ] ) ):
