@@ -1428,7 +1428,7 @@ def BIGA( CIOR, XX, NTRM, NOABS, YESANG, RBIGA, CBIGA ):
             RTMP   = np.sin( MRE*XX )
             RBIGA[ 1 ] = -REZINV + RTMP /( RTMP*REZINV - np.cos( MRE*XX ) )
     
-            for N in range( 1, NTRM ):
+            for N in range( 2 - 1, NTRM ):
                 RBIGA[ N ] = -( (N + 1)*REZINV ) + 1.0 / ( ( (N + 1)*REZINV ) - RBIGA[ N - 1 ] )
     
         else:
@@ -1437,7 +1437,7 @@ def BIGA( CIOR, XX, NTRM, NOABS, YESANG, RBIGA, CBIGA ):
             CBIGA[ 1 ] = - ZINV + ( 1.-CTMP ) /( ZINV * ( 1.-CTMP ) - \
                              complex( 0., 1. )*( 1.+CTMP ) )
     
-            for N in range( 1, NTRM ):
+            for N in range( 2 - 1, NTRM ):
                 CBIGA[ N ] = - ( (N + 1)*ZINV ) + 1.0 / ( ( (N + 1)*ZINV ) - CBIGA[ N-1 ] )
               
             
@@ -1605,7 +1605,7 @@ def MIPRNT( PRNT, XX, PERFCT, CREFIN, NUMANG, XMU, QEXT, QSCA, GQSC, NMOM, IPOLZ
         print '  --- S1*conjg(S2) ---   i1=S1**2   i2=S2**2  (i1+i2)/2'
         print '  DEG POLZN'
             
-        for I in range( 0, NUMANG ):
+        for I in range( 1 - 1, NUMANG ):
             I1     = np.real( S1[ I ] )**2 + np.imag( S1[ I ] )**2
             I2     = np.real( S2[ I ] )**2 + np.imag( S2[ I ] )**2
             print  (I + 1), XMU[ I ], S1[ I ], S2[ I ], S1[ I ]*np.conjugate( S2[ I ] ) 
