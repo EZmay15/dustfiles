@@ -1,9 +1,9 @@
 
 
 #The original Wiscombe MIEV0noP Fortran file is also in the dustfiles repository for
-#reference/comparison as MIEV0noPcopy.f! I found the code on the page "Mie Scattering" by
-#Scott Prahl, who had zipped a version of Wiscombe's code and made it
-#downloadable (http://omlc.org/software/mie/)
+#reference/comparison as MIEV0noPcopy.f! MIEV.doc, ErrPack.f, and MIEV0.f have also been
+#included as copies. I found the code on the page "Mie Scattering" by Scott Prahl, who had
+#zipped a version of Wiscombe's code and made it downloadable (http://omlc.org/software/mie/).
 
 
 #Notes:
@@ -80,65 +80,6 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
 
         IMPLICIT NONE
     
-    I N T E R N A L   V A R I A B L E S
-    -----------------------------------
-    
-    AN,BN           Mie coefficients a-sub-n, b-sub-n ( Ref. 1, Eq. 16 )
-    ANM1,BNM1       Mie coefficients  a-sub-(n-1), b-sub-(n-1);  used in GQSC sum
-    ANP             Coeffs. in S+ expansion ( Ref. 2, p. 1507 )
-    BNP             Coeffs. in S- expansion ( Ref. 2, p. 1507 )
-    ANPM            Coeffs. in S+ expansion ( Ref. 2, p. 1507 ) when  
-                        MU  is replaced by  - MU
-    BNPM            Coeffs. in S- expansion ( Ref. 2, p. 1507 ) when  
-                        MU  is replaced by  - MU
-    CALCMO(K)       TRUE, calculate moments for K-th phase quantity (derived from IPOLZN)
-    CBIGA(N)        Bessel function ratio A-sub-N (Ref. 2, Eq. 2) ( COMPLEX version )
-    CDENAN,CDENBN   (COMPLEX) denominators of An,Bn
-    CIOR            Complex index of refraction with negative 
-                        imaginary part (Van de Hulst convention)
-    CIORIV          1 / cIoR
-    COEFF           ( 2N + 1 ) / ( N ( N + 1 ) )
-    FN              Floating point version of index in loop performing Mie 
-                        series summation
-    LITA,LITB(N)    Mie coefficients An, Bn, saved in arrays for 
-                        use in calculating Legendre moments PMOM
-    MAXTRM          Max. possible no. of terms in Mie series
-    MM              + 1 and  - 1,  alternately.
-    MIM             Magnitude of imaginary refractive index
-    MRE             Real part of refractive index
-    MAXANG          Max. possible value of input variable NUMANG
-    NANGD2          (NUMANG+1)/2 ( no. of angles in 0-90 deg; ANYANG=F )
-    NOABS           TRUE, sphere non-absorbing (determined by MIMCUT)
-    NP1DN           ( N + 1 ) / N
-    NPQUAN          Highest-numbered phase quantity for which moments are
-                        to be calculated (the largest digit in IPOLZN if  IPOLZN != 0)
-    NTRM            No. of terms in Mie series
-    PASS1           TRUE on first entry, FALSE thereafter; for self-test
-    PIN(J)          Angular function pi-sub-n ( Ref. 2, Eq. 3 ) at J-th angle
-    PINM1(J)        pi-sub-(n-1) ( see PIn ) at J-th angle
-    PSINM1          Ricatti-Bessel function psi-sub-(n-1), argument XX
-    PSIN            Ricatti-Bessel function psi-sub-n of argument 
-                        XX ( Ref. 1, p. 11 ff. )
-    RBIGA(N)        Bessel function ratio A-sub-N (Ref. 2, Eq. 2) 
-                        ( REAL version, for when imag refrac index = 0 )
-    RIORIV          1 / Mre
-    RN              1 / N
-    RTMP            (REAL) temporary variable
-    SP(J)           S+  for J-th angle  ( Ref. 2, p. 1507 )
-    SM(J)           S-  for J-TH angle  ( Ref. 2, p. 1507 )
-    SPS(J)          S+  for (NUMANG+1-J)-th angle ( ANYANG=FALSE )
-    SMS(J)          S-  for (NUMANG+1-J)-th angle ( ANYANG=FALSE )
-    TAUN            Angular function tau-sub-n ( Ref. 2, Eq. 4 ) at J-th angle
-    TCOEF           N ( N+1 ) ( 2N+1 ) (for summing TFORW,TBACK series)
-    TWONP1          2N + 1
-    YESANG          TRUE if scattering amplitudes are to be calculated
-    ZETNM1          Ricatti-Bessel function zeta-sub-(n-1) of argument 
-                        XX ( Ref. 2, Eq. 17 )
-    ZETN            Ricatti-Bessel function zeta-sub-n of argument XX
-    
-    
-        IMPLICIT  NONE
-    
     ----------------------------------------------------------------------
     --------  I / O SPECIFICATIONS FOR SUBROUTINE MIEV0  -----------------
     ----------------------------------------------------------------------
@@ -163,22 +104,21 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
     .. Local Scalars ..
     
     LOGICAL   NOABS, PASS1, YESANG
-    INTEGER   I, J, N, NANGD2, NPQUAN, NTRM
+    INTEGER   I, J, N, NANGD2, NTRM
     REAL      CHIN, CHINM1, COEFF, DENAN, DENBN, FN, MIM, MM, MRE, NP1DN, PSIN, 
-                  PSINM1, RATIO, RIORIV, RN, RTMP, TAUN, TCOEF, TWONP1, XINV
+              PSINM1, RATIO, RIORIV, RN, RTMP, TAUN, TCOEF, TWONP1, XINV
     COMPLEX   AN, ANM1, ANP, ANPM, BN, BNM1, BNP, BNPM, CDENAN, CDENBN, CIOR, 
-                  CIORIV, CTMP, ZET, ZETN, ZETNM1
+              CIORIV, CTMP, ZET, ZETN, ZETNM1
     ..
     .. Local Arrays ..
         
-    LOGICAL   CALCMO( 4 )
     REAL      PIN( MAXANG ), PINM1( MAXANG ), RBIGA( MAXTRM )
-    COMPLEX   CBIGA( MAXTRM ), LITA( MAXTRM ), LITB( MAXTRM ), 
-                  SM( MAXANG ), SMS( MXANG2 ), SP( MAXANG ), SPS( MXANG2 )
+    COMPLEX   CBIGA( MAXTRM ), LITA( 2 ), LITB( 2 ), 
+              SM( MAXANG ), SMS( MXANG2 ), SP( MAXANG ), SPS( MXANG2 )
     ..
     .. External Subroutines ..
     
-    EXTERNAL  BIGA, CKINMI, ERRMSG, LPCOEF, MIPRNT, SMALL1, SMALL2, TESTMI
+    EXTERNAL  BIGA, CKINMI, ERRMSG, MIPRNT, SMALL1, SMALL2, TESTMI
     ..
     .. Intrinsic Functions ..
     
@@ -206,9 +146,8 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
     #Save some input variables and replace them with values needed to do the self-test
     
     if PASS1: 
-        return TESTMI( False, XX, CREFIN, MIMCUT, PERFCT, ANYANG, NMOM, IPOLZN, 
-                       NUMANG, XMU, QEXT, QSCA, GQSC, SFORW, SBACK, S1, S2, 
-                       TFORW, TBACK, PMOM, MOMDIM )
+        return TESTMI( False, XX, CREFIN, MIMCUT, PERFCT, ANYANG, NUMANG, XMU, QEXT,
+                       QSCA, GQSC, SFORW, SBACK, S1, S2, TFORW, TBACK )
             
     #The while loops serve as the go-to/continues labeled 10 and 100 in the Fortran code
     while True:
@@ -217,8 +156,7 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
             
             #Check input and calculate certain variables from input 
             
-            return CKINMI( NUMANG, MAXANG, XX, PERFCT, CREFIN, MOMDIM, NMOM, IPOLZN, 
-                           ANYANG, XMU, CALCMO, NPQUAN )
+            return CKINMI( NUMANG, MAXANG, XX, PERFCT, CREFIN, NMOM, ANYANG, XMU )
             
             
             if PERFCT and XX <= 0.1:
@@ -368,12 +306,6 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
     
                     QSCA = QSCA + TWONP1 * ( SQ( AN ) + SQ( BN ) )
     
-                    
-                #Save Mie coefficients for *PMOM* calculation
-                
-                LITA[ N ] = AN
-                LITB[ N ] = BN
-                
                 
                 if not PERFCT and N > XX:
                     #Flag resonance spikes
@@ -489,11 +421,7 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
 
             break
             #end of while loop representing the go-to/continue labeled 100 in the Fortran code
-
-    
-        #Calculate Legendre moments
-        if NMOM > 0:
-            return LPCOEF( NTRM, NMOM, IPOLZN, MOMDIM, CALCMO,NPQUAN, LITA, LITB, PMOM )
+            
                     
         if np.imag( CREFIN ) > 0.0:
             #Take complex conjugates of scattering amplitudes
@@ -514,27 +442,25 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
             #Compare test case results with correct answers and abort if bad; 
             #otherwise restore user input and proceed
     
-            return TESTMI( True, XX, CREFIN, MIMCUT, PERFCT, ANYANG, NMOM, IPOLZN, NUMANG, 
-                           XMU, QEXT, QSCA, GQSC, SFORW, SBACK, S1, S2, TFORW, 
-                           TBACK, PMOM, MOMDIM )
+            return TESTMI( True, XX, CREFIN, MIMCUT, PERFCT, ANYANG, NUMANG, XMU,
+                           QEXT, QSCA, GQSC, SFORW, SBACK, S1, S2, TFORW, TBACK )
                     
             PASS1 = False
             
             
         else:
             if PRNT[ 0 ] or PRNT[ 1 ]:
-                return MIPRNT( PRNT, XX, PERFCT, CREFIN, NUMANG, XMU, QEXT, QSCA, GQSC, NMOM, 
-                               IPOLZN, MOMDIM, CALCMO, PMOM, SFORW, SBACK, TFORW, 
-                               TBACK, S1, S2 )
+                return MIPRNT( PRNT, XX, PERFCT, CREFIN, NUMANG, XMU, QEXT, QSCA, GQSC, SFORW,
+                               SBACK, TFORW, TBACK, S1, S2 )
             break
             #end of while loop representing go-to/continue labeled 10 in Fortran code    
             
             
-def CKINMI( NUMANG, MAXANG, XX, PERFCT, CREFIN, MOMDIM, NMOM, IPOLZN, 
-            ANYANG, XMU, CALCMO, NPQUAN ):
+def CKINMI( NUMANG, MAXANG, XX, PERFCT, CREFIN, NMOM, ANYANG, XMU ):
     
     """     
-        Check for bad input to MIEV0 and calculate CALCMO, NPQUAN
+        Check for bad input to MIEV0
+        (NoPMOM version)
     
     Routines called :  ERRMSG, WRTBAD, WRTDIM
         
@@ -544,20 +470,18 @@ def CKINMI( NUMANG, MAXANG, XX, PERFCT, CREFIN, MOMDIM, NMOM, IPOLZN,
     .. Scalar Arguments ..
     
     LOGICAL   ANYANG, PERFCT
-    INTEGER   IPOLZN, MAXANG, MOMDIM, NMOM, NPQUAN, NUMANG
+    INTEGER   MAXANG, NMOM, NUMANG
     REAL      XX
     COMPLEX   CREFIN
     ..
     .. Array Arguments ..
     
-    LOGICAL   CALCMO( * )
     REAL      XMU( * )
     ..
     .. Local Scalars ..
     
-    CHARACTER STRING*4
     LOGICAL   INPERR
-    INTEGER   I, IP, J, L
+    INTEGER   I
     ..
     .. External Functions ..
     
@@ -570,7 +494,7 @@ def CKINMI( NUMANG, MAXANG, XX, PERFCT, CREFIN, MOMDIM, NMOM, IPOLZN,
     ..
     .. Intrinsic Functions ..
     
-    INTRINSIC ABS, AIMAG, ICHAR, MAX, REAL
+    INTRINSIC ABS, AIMAG, REAL
     ..
     """    
     
@@ -587,41 +511,13 @@ def CKINMI( NUMANG, MAXANG, XX, PERFCT, CREFIN, MOMDIM, NMOM, IPOLZN,
     
     if not PERFCT and np.real( CREFIN ) <= 0.:
         INPERR = WRTBAD( 'CREFIN' )
-    
-    if MOMDIM < 0: 
-        INPERR = WRTBAD( 'MOMDIM' )
         
         
     if NMOM != 0:
     
-        if NMOM < 0 or NMOM > MOMDIM: 
             INPERR = WRTBAD( 'NMOM' )
+            print 'For nonzero NMOM, use complete version of MIEVO'
     
-        if abs( IPOLZN ) > 4444:
-            INPERR = WRTBAD( 'IPOLZN' )
-    
-        NPQUAN = 0
-    
-        for L in range( 0, 4 ):
-            CALCMO[ L ] = False
-    
-        if IPOLZN != 0:
-        #Parse out IPOLZN into its digits to find which phase quantities are 
-        #to have their moments calculated
-    
-            print abs( IPOLZN )
-    
-            for J in range( 1, 4 + 1 ):
-                #IP = ICHAR( STRING( J:J ) ) - ICHAR( '0' )
-    
-                if IP >= 1 and IP <= 4:
-                    CALCMO[ IP ] = True
-    
-                if IP == 0 or ( IP >= 5 and IP <= 9 ):
-                    INPERR = WRTBAD( 'IPOLZN' )
-    
-                NPQUAN = max( NPQUAN, IP )
-        
         
     if ANYANG:
         #Allow for slight imperfections in computation of cosine
@@ -643,696 +539,6 @@ def CKINMI( NUMANG, MAXANG, XX, PERFCT, CREFIN, MOMDIM, NMOM, IPOLZN,
     
     if XX > 20000.0 or np.real( CREFIN ) > 10.0 or abs( np.imag( CREFIN ) ) > 10.0:
         return ErrMsg( 'MIEV0--XX or CREFIN outside tested range', False )
-           
-        
-        
-def LPCOEF( NTRM, NMOM, IPOLZN, MOMDIM, CALCMO, NPQUAN, A, B, PMOM ):
-    
-    """
-        Calculate Legendre polynomial expansion coefficients (also
-        called moments) for phase quantities ( Ref. 5 formulation )
-    
-    INPUT:  NTRM                    Number terms in Mie series
-            NMOM, IPOLZN, MOMDIM    MIEV0 arguments
-            CALCMO                  Flags calculated from IPOLZN
-            NPQUAN                  Defined in MIEV0
-            A, B                    Mie series coefficients
-    
-    OUTPUT: PMOM                    Legendre moments (MIEV0 argument)
-    
-    Routines called :  ERRMSG, LPCO1T, LPCO2T
-    
-    *** NOTES ***
-    
-        (1)  Eqs. 2-5 are in error in Dave, Appl. Opt. 9,
-        1888 (1970).  Eq. 2 refers to M1, not M2;  eq. 3 refers to
-        M2, not M1.  In eqs. 4 and 5, the subscripts on the second
-        term in square brackets should be interchanged.
-    
-        (2)  The general-case logic in this subroutine works correctly
-        in the two-term Mie series case, but subroutine LPCO2T
-        is called instead, for speed.
-    
-        (3)  Subroutine  LPCO1T, to do the one-term case, is never
-        called within the context of MIEV0, but is included for
-        complete generality.
-    
-        (4)  Some improvement in speed is obtainable by combining the
-        310- and 410-loops, if moments for both the third and fourth
-        phase quantities are desired, because the third phase quantity
-        is the real part of a complex series, while the fourth phase
-        quantity is the imaginary part of that very same series.  But
-        most users are not interested in the fourth phase quantity,
-        which is related to circular polarization, so the present
-        scheme is usually more efficient.
-    
-    
-        ** Definitions of local variables ***
-    
-    AM(M)       Numerical coefficients  a-sub-m-super-l 
-                    in Dave, Eqs. 1-15, as simplified in Ref. 5.
-    
-    BI(I)       Numerical coefficients  b-sub-i-super-l
-                    in Dave, Eqs. 1-15, as simplified in Ref. 5.
-    
-    BIDEL(I)    1/2 Bi(I) times factor capital-del in Dave
-    
-    CM,DM()     Arrays C and D in Dave, Eqs. 16-17 (Mueller form),
-                    calculated using recurrence derived in Ref. 5
-    
-    CS,DS()     Arrays C and D in Ref. 4, Eqs. A5-A6 (Sekera form),
-                    calculated using recurrence derived in Ref. 5
-    
-    C,D()       Either CM,DM or CS,DS, depending on IPOLZN
-    
-    EVENL       True for even-numbered moments;  false otherwise
-    
-    IDEL        1 + little-del  in Dave
-    
-    MAXTRM      Max. no. of terms in Mie series
-    
-    MAXMOM      Max. no. of non-zero moments
-    
-    NUMMOM      Number of non-zero moments
-    
-    RECIP(K)    1 / K
-    
-    
-    IMPLICIT  NONE
-    
-    .. Parameters ..
-    
-    INTEGER   MAXTRM, MAXMOM, MXMOM2, MAXRCP
-    PARAMETER ( MAXTRM = 1102, MAXMOM = 2*MAXTRM, MXMOM2 = MAXMOM / 2, 
-                   MAXRCP = 4*MAXTRM + 2 )
-    ..
-    .. Scalar Arguments ..
-    
-    INTEGER   IPOLZN, MOMDIM, NMOM, NPQUAN, NTRM
-    ..
-    .. Array Arguments ..
-    
-    LOGICAL   CALCMO( * )
-    REAL      PMOM( 0:MOMDIM, * )
-    COMPLEX   A( * ), B( * )
-    ..
-    .. Local Scalars ..
-    
-    LOGICAL   EVENL, PASS1
-    INTEGER   I, IDEL, IMAX, J, K, L, LD2, M, MMAX, NUMMOM
-    REAL      SUM
-    ..
-    .. Local Arrays ..
-    
-    REAL      AM( 0:MAXTRM ), BI( 0:MXMOM2 ), BIDEL( 0:MXMOM2 ), RECIP( MAXRCP )
-    COMPLEX   C( MAXTRM ), CM( MAXTRM ), CS( MAXTRM ), D( MAXTRM ), 
-                  DM( MAXTRM ), DS( MAXTRM )
-    ..
-    .. External Subroutines ..
-    
-    EXTERNAL  ERRMSG, LPCO1T, LPCO2T
-    ..
-    .. Intrinsic Functions ..
-    
-    INTRINSIC AIMAG, CONJG, MAX, MIN, MOD, REAL
-    ..
-    .. Equivalences ..
-    
-    EQUIVALENCE ( C, CM ), ( D, DM )
-    ..
-    SAVE      PASS1, RECIP
-    
-    DATA      PASS1 / .TRUE. /
-    """    
-        
-    PASS1 = True
-    
-        
-    if PASS1:
-    
-        for K in range( 0, MAXRCP ):
-            RECIP[ K ] = 1.0 / ( K + 1 )
-    
-        PASS1  = False
-    
-    for J in range( 1, max( 1, NPQUAN ) + 1 ):
-    
-        for L in range( 0, NMOM + 1 ):
-            PMOM[ L, J ] = 0.0
-    
-                
-    if NTRM == 1:
-                   
-        return LPCO1T( NMOM, IPOLZN, MOMDIM, CALCMO, A, B, PMOM )
-    
-    elif NTRM == 2:
-    
-        return LPCO2T( NMOM, IPOLZN, MOMDIM, CALCMO, A, B, PMOM )
-    
-    
-    if NTRM + 2 > MAXTRM:
-        return ErrMsg( 'LPCoef--PARAMETER MaxTrm too small', True )
-    
-    #Calculate Mueller C, D arrays
-    CM[ NTRM + 1 ] = 0. + 0.j
-    DM[ NTRM + 1 ] = 0. + 0.j
-    CM[ NTRM ] = ( 1. - RECIP[ NTRM ] ) * B[ NTRM - 1 ]
-    DM[ NTRM ] = ( 1. - RECIP[ NTRM ] ) * A[ NTRM - 1 ]
-    CM[ NTRM - 1 ] = ( RECIP[ NTRM - 1 ] + RECIP[ NTRM ] ) * A[ NTRM - 1 ] + \
-                     ( 1. - RECIP[ NTRM - 1 ] )*B[ NTRM - 1 - 1 ]
-    DM[ NTRM - 1 ] = ( RECIP[ NTRM - 1 ] + RECIP[ NTRM ] ) * B[ NTRM - 1 ] + \
-                     ( 1. - RECIP[ NTRM - 1 ] )*A[ NTRM - 1 - 1 ]
-    
-    for K in range( NTRM - 1 - 1, 2 - 1 - 1 , -1 ):
-        CM[ K ] = CM[ K+2 ] - ( 1. + RECIP[ K+1 ] ) * B[ K+1 ] + \
-                  ( RECIP[ K ] + RECIP[ K+1 ] ) * A[ K ] + ( 1. - RECIP[ K ] ) * B[ K-1 ]
-        DM[ K ] = DM[ K+2 ] - ( 1. + RECIP[ K+1 ] ) * A[ K+1 ] + \
-                  ( RECIP[ K ] + RECIP[ K+1 ] ) * B[ K ] + ( 1. - RECIP[ K ] ) * A[ K-1 ]
-    
-    CM[ 0 ] = CM[ 2 ] + 1.5 * ( A[ 0 ] - B[ 1 ] )
-    DM[ 0 ] = DM[ 2 ] + 1.5 * ( B[ 0 ] - A[ 1 ] )
-    
-    
-    if IPOLZN >= 0:
-    
-        for K in range( 0, NTRM + 2 ):
-            C[ K ] = ( 2*( K + 1 ) - 1 ) * CM[ K ]
-            D[ K ] = ( 2*( K + 1 ) - 1 ) * DM[ K ]
-    
-    else:
-        #Compute Sekera C and D arrays
-        CS[ NTRM + 1 ] = 0. + 0.j
-        DS[ NTRM + 1 ] = 0. + 0.j
-        CS[ NTRM ] = 0. + 0.j
-        DS[ NTRM ] = 0. + 0.j
-    
-        for K in range( NTRM - 1, 1 - 1 - 1, -1 ):
-            CS[ K ] = CS[ K+2 ] + ( 2*( K + 1 ) + 1 ) * ( CM[ K+1 ] - B[ K ] )
-            DS[ K ] = DS[ K+2 ] + ( 2*( K + 1 ) + 1 ) * ( DM[ K+1 ] - A[ K ] )
-    
-        for K in range( 0, NTRM + 2 ):
-            C[ K ] = ( 2*( K + 1 ) - 1 ) * CS[ K ]
-            D[ K ] = ( 2*( K + 1 ) - 1 ) * DS[ K ]
-    
-    
-    if IPOLZN < 0:
-        NUMMOM = min( NMOM, 2*NTRM - 2 )
-    if IPOLZN >= 0: 
-        NUMMOM = min( NMOM, 2*NTRM )
-    
-    if NUMMOM > MAXMOM:
-        return ErrMsg( 'LPCoef--PARAMETER MaxTrm too small', True )
-    
-    
-    #Loop over moments
-    
-    for L in range( 0, NUMMOM + 1 ):
-    
-        LD2 = L / 2
-        EVENL  = L % 2 == 0
-        #Calculate numerical coefficients a-sub-m and b-sub-i in Dave double-sums 
-        #for moments
-        if L == 0:
-            
-            IDEL = 1
-    
-            for M in range( 0, NTRM + 1 ):
-                AM[ M ] = 2.0 * RECIP[ 2*M ]
-    
-            BI[ 0 ] = 1.0
-    
-        elif EVENL:
-    
-            IDEL = 1
-    
-            for M in range( LD2, NTRM + 1 ):
-                AM[ M ] = ( 1. + RECIP[ 2*M - L ] ) * AM[ M ]
-    
-            for I in range( 0, LD2 - 1 + 1 ):
-                BI[ I ] = ( 1. - RECIP[ L - 2*I - 1] ) * BI[ I ]
-    
-            BI[ LD2 ] = ( 2. - RECIP[ L - 1 ] ) * BI[ LD2 - 1 ]
-    
-        else:
-    
-            IDEL = 2
-    
-            for M in range( LD2, NTRM + 1 ):
-                AM[ M ] = ( 1. - RECIP[ 2*M + L + 1 ] ) * AM[ M ]
-    
-            for I in range( 0, LD2 + 1 ):
-                BI[ I ] = ( 1. - RECIP[ L + 2*I ] ) * BI[ I ]
-    
-                    
-        #Establish upper limits for sums and incorporate factor capital-del into b-sub-i
-        MMAX = NTRM - IDEL
-        if IPOLZN >= 0:
-            MMAX = MMAX + 1
-        IMAX = min( LD2, MMAX - LD2 )
-    
-        if IMAX < 0:
-            
-            #The break serves as the go-to/continue labeled 250 in the Fortran code
-            break
-    
-        for I in range( 0, IMAX + 1 ):
-            BIDEL[ I ] = BI[ I ]
-    
-        if EVENL: 
-            BIDEL[ 0 ] = 0.5*BIDEL[ 0 ]
-    
-        #Perform double sums just for phase quantities desired by user
-        if IPOLZN == 0:
-    
-            for I in range( 0, IMAX + 1 ):
-            #vectorizable loop
-    
-                SUM = 0.0
-    
-                for M in range( LD2, MMAX - I + 1 ):
-                    SUM = SUM + AM[ M ] * ( np.real( C[ M-I ] * np.conjugate( C[ M + I + IDEL - \
-                          1 ] ) ) + np.real( D[ M-I ] * np.conjugate( D[ M+I+IDEL - 1 ] ) ) )
-    
-                PMOM[ L, 1 ] = PMOM[ L, 1 ] + BIDEL[ I ] * SUM
-    
-    
-            PMOM[ L, 1 ] = 0.5*PMOM[ L, 1 ]
-            
-            #The break serves as the go-to/continue labeled 250 in the Fortran code
-            break
-    
-    
-        if CALCMO[ 0 ]:
-    
-            for I in range( 0, IMAX + 1 ):
-    
-                SUM = 0.0
-                #vectorizable loop
-                for M in range( LD2, MMAX - I + 1 ):
-                    SUM = SUM + AM[ M ] * np.real( C[ M-I ] * np.conjugate( C[ M+I+IDEL - 1 ] ) )
-    
-                PMOM[ L, 1 ] = PMOM[ L, 1 ] + BIDEL[ I ] * SUM
-    
-    
-        if CALCMO[ 1 ]:
-                
-            for I in range( 0, IMAX + 1 ):
-    
-                SUM = 0.0
-                #vectorizable loop
-                for M in range( LD2, MMAX - I + 1 ):
-                    SUM = SUM + AM[ M ] * np.real( D[ M-I ] * np.conjugate( D[ M+I+IDEL - 1] ) )
-    
-                PMOM[ L, 2 ] = PMOM[ L, 2 ] + BIDEL[ I ] * SUM
-    
-    
-        if CALCMO[ 2 ]:
-    
-            for I in range( 0, IMAX + 1 ):
-    
-                SUM = 0.0
-                #vectorizable loop
-                for M in range( LD2, MMAX - I + 1 ):
-                    SUM = SUM + AM[ M ] * ( np.real( C[ M-I ] * np.conjugate( D[ M + I + IDEL - \
-                          1 ] ) ) + np.real( C[ M+I+IDEL - 1 ] * np.conjugate( D[ M-I ] ) ) )
-    
-                PMOM[ L, 3 ] = PMOM[ L, 3 ] + BIDEL[ I ] * SUM
-    
-    
-            PMOM[ L, 3 ] = 0.5*PMOM[ L, 3 ]
-             
-    
-        if CALCMO[ 3 ]:
-    
-            for I in range( 0, IMAX + 1 ):
-    
-                SUM= 0.0
-                #vectorizable loop
-                for M in range( LD2, MMAX - I + 1 ):
-                    SUM = SUM + AM[ M ] * ( np.imag( C[ M-I ] * np.conjugate( D[ M + I + IDEL - \
-                          1 ] ) ) + np.imag( C[ M+I+IDEL - 1 ] * np.conjugate( D[ M-I ] ) ) )
-    
-                PMOM[ L, 4 ] = PMOM[ L, 4 ] + BIDEL[ I ] * SUM
-    
-    
-            PMOM[ L, 4 ] = - 0.5 * PMOM[ L, 4 ]
-        
-        
-        
-def LPCO1T( NMOM, IPOLZN, MOMDIM, CALCMO, A, B, PMOM ):
-    
-    """
-        Calculate Legendre polynomial expansion coefficients (also
-        called moments) for phase quantities in special case where
-        no. terms in Mie series = 1
-    
-        INPUT:  NMOM, IPOLZN, MOMDIM     MIEV0 arguments
-                CALCMO                   Flags calculated from IPOLZN
-                A(1), B(1)               Mie series coefficients
-    
-        OUTPUT: PMOM                     Legendre moments
-    
-    
-    IMPLICIT  NONE
-    
-    .. Scalar Arguments ..
-    
-    INTEGER   IPOLZN, MOMDIM, NMOM
-    ..
-    .. Array Arguments ..
-    
-    LOGICAL   CALCMO( * )
-    REAL      PMOM( 0:MOMDIM, * )
-    COMPLEX   A( * ), B( * )
-    ..
-    .. Local Scalars ..
-    
-    INTEGER   L, NUMMOM
-    REAL      A1SQ, B1SQ
-    COMPLEX   A1B1C, CTMP
-    ..
-    .. Intrinsic Functions ..
-    
-    INTRINSIC AIMAG, CONJG, MIN, REAL
-    ..
-    .. Statement Functions ..
-    
-    REAL      SQ
-    ..
-    .. Statement Function definitions ..
-    
-    SQ( CTMP ) = REAL( CTMP )**2 + AIMAG( CTMP )**2
-    ..
-    """    
-    
-    def SQ( CTMP ):
-        np.real( CTMP )**2 + np.imag( CTMP )**2
-        
-        
-    A1SQ   = SQ( A[ 0 ] )
-    B1SQ   = SQ( B[ 0 ] )
-    A1B1C  = A[ 0 ] * np.conjugate( B[ 0 ] )
-    
-    
-    if IPOLZN < 0:
-    
-        if CALCMO[ 0 ]: 
-            PMOM[ 0, 1 ] = 2.25*B1SQ
-    
-        if CALCMO[ 1 ]: 
-            PMOM[ 0, 2 ] = 2.25*A1SQ
-    
-        if CALCMO[ 2 ]:
-            PMOM[ 0, 3 ] = 2.25*np.real( A1B1C )
-    
-        if CALCMO[ 3 ]: 
-            PMOM[ 0, 4 ] = 2.25*np.imag( A1B1C )
-    
-    else:
-    
-        NUMMOM = min( NMOM, 2 )
-    
-        #Loop over moments
-        for L in range( 0, NUMMOM + 1 ):
-    
-            if IPOLZN == 0:
-    
-                if L == 0: 
-                    PMOM[ L, 1 ] = 1.5*( A1SQ + B1SQ )
-    
-                if L == 1: 
-                    PMOM[ L, 1 ] = 1.5*np.real( A1B1C )
-    
-                if L == 2: 
-                    PMOM[ L, 1 ] = 0.15*( A1SQ + B1SQ )
-    
-                #The break serves as the go-to/continue labeled 10 in the Fortran code
-                break
-    
-    
-            if CALCMO[ 0 ]:
-    
-                if L == 0: 
-                    PMOM[ L, 1 ] = 2.25*( A1SQ + B1SQ / 3. )
-    
-                if L == 1: 
-                    PMOM[ L, 1 ] = 1.5*np.real( A1B1C )
-    
-                if L == 2: 
-                    PMOM[ L, 1 ] = 0.3*B1SQ
-    
-    
-            if CALCMO[ 1 ]:
-    
-                if L == 0: 
-                    PMOM[ L, 2 ] = 2.25*( B1SQ + A1SQ / 3. )
-    
-                if L == 1: 
-                    PMOM[ L, 2 ] = 1.5*np.real( A1B1C )
-    
-                if L == 2: 
-                    PMOM[ L, 2 ] = 0.3*A1SQ
-    
-    
-            if CALCMO[ 2 ]:
-    
-                if L == 0: 
-                    PMOM[ L, 3 ] = 3.0*np.real( A1B1C )
-    
-                if L == 1: 
-                    PMOM[ L, 3 ] = 0.75*( A1SQ + B1SQ )
-    
-                if L == 2: 
-                    PMOM[ L, 3 ] = 0.3*np.real( A1B1C )
-    
-    
-            if CALCMO[ 3 ]:
-    
-                if L == 0: 
-                    PMOM[ L, 4 ] = -1.5*np.imag( A1B1C )
-    
-                if L == 1: 
-                    PMOM[ L, 4 ] = 0.0
-    
-                if L == 2: 
-                    PMOM[ L, 4 ] = 0.3*np.imag( A1B1C )
-        
-        
-        
-def LPCO2T( NMOM, IPOLZN, MOMDIM, CALCMO, A, B, PMOM ):
-    
-    """
-        Calculate Legendre polynomial expansion coefficients (also
-        called moments) for phase quantities in special case where
-        no. terms in Mie series = 2
-    
-        INPUT:  NMOM, IPOLZN, MOMDIM     MIEV0 arguments
-                CALCMO                   Flags calculated from IPOLZN
-                A(1-2), B(1-2)           Mie series coefficients
-    
-        OUTPUT: PMOM                     Legendre moments
-    
-    
-    IMPLICIT  NONE
-    
-    .. Scalar Arguments ..
-    
-    INTEGER   IPOLZN, MOMDIM, NMOM
-    ..
-    .. Array Arguments ..
-    
-    LOGICAL   CALCMO( * )
-    REAL      PMOM( 0:MOMDIM, * )
-    COMPLEX   A( * ), B( * )
-    ..
-    .. Local Scalars ..
-    
-    INTEGER   L, NUMMOM
-    REAL      A2SQ, B2SQ, PM1, PM2
-    COMPLEX   A2C, B2C, CA, CAC, CAT, CB, CBC, CBT, CG, CH, CTMP
-    ..
-    .. Intrinsic Functions ..
-    
-    INTRINSIC AIMAG, CONJG, MIN, REAL
-    ..
-    .. Statement Functions ..
-    
-    REAL      SQ
-    ..
-    .. Statement Function definitions ..
-    
-    SQ( CTMP ) = REAL( CTMP )**2 + AIMAG( CTMP )**2
-    ..
-    """    
-        
-    def SQ( CTMP ):
-        np.real( CTMP )**2 + np.imag( CTMP )**2
-        
-        
-    CA   = 3.*A[ 0 ] - 5.*B[ 1 ]
-    CAT  = 3.*B[ 0 ] - 5.*A[ 1 ]
-    CAC  = np.conjugate( CA )
-    A2SQ = SQ( A[ 1 ] )
-    B2SQ = SQ( B[ 1 ] )
-    A2C  = np.conjugate( A[ 1 ] )
-    B2C  = np.conjugate( B[ 1 ] )
-    
-    
-    if IPOLZN < 0:
-
-        #Loop over Sekera moments
-        NUMMOM = min( NMOM, 2 )
-    
-        for L in range( 0, NUMMOM + 1 ):
-    
-            if CALCMO[ 0 ]:
-    
-                if L == 0: 
-                    PMOM[ L, 1 ] = 0.25 * ( SQ( CAT ) + ( 100./3. )* B2SQ )
-    
-                if L == 1:
-                    PMOM[ L, 1 ] = ( 5./3. )*np.real( CAT*B2C )
-    
-                if L == 2:
-                    PMOM[ L, 1 ] = ( 10./3. )*B2SQ
-    
-    
-            if CALCMO[ 1 ]:
-    
-                if L == 0: 
-                    PMOM[ L, 2 ] = 0.25 * ( SQ( CA ) + ( 100./3. ) * A2SQ )
-    
-                if L == 1: 
-                    PMOM[ L, 2 ] = ( 5./3. )*np.real( CA*A2C )
-    
-                if L == 2:
-                    PMOM[ L, 2 ] = ( 10./3. )*A2SQ
-    
-    
-            if CALCMO[ 2 ]:
-    
-                if L == 0: 
-                    PMOM[ L, 3 ] = 0.25 * np.real( CAT * CAC + ( 100./3. ) * B[ 1 ] * A2C )
-    
-                if L == 1: 
-                    PMOM[ L, 3 ] = 5./6.* np.real( B[ 1 ]*CAC + CAT*A2C )
-    
-                if L == 2:
-                    PMOM[ L, 3 ] = 10./3.* np.real( B[ 1 ]*A2C )
-    
-    
-            if CALCMO[ 3 ]:
-    
-                if L == 0:
-                    PMOM[ L, 4 ] = -0.25 * np.imag( CAT * CAC + ( 100./3. )* B[ 1 ] * A2C )
-    
-                if L == 1: 
-                    PMOM[ L, 4 ] = -5./ 6.* np.imag( B[ 1 ]*CAC + CAT*A2C )
-    
-                if L == 2: 
-                    PMOM[ L, 4 ] = -10./ 3.* np.imag( B[ 1 ]*A2C )
-    
-    
-    else:
-    
-        CB  = 3.*B[ 0 ] + 5.*A[ 1 ]
-        CBT = 3.*A[ 0 ] + 5.*B[ 1 ]
-        CBC = np.conjugate( CB )
-        CG  = ( CBC*CBT + 10.*( CAC*A[ 1 ] + B2C*CAT ) ) / 3.
-        CH  = 2.*( CBC*A[ 1 ] + B2C*CBT )
-    
-        #Loop over Mueller moments
-        NUMMOM = min( NMOM, 4 )
-    
-        for L in range( 0, NUMMOM + 1 ):
-    
-    
-            if IPOLZN == 0 or CALCMO[ 0 ]:
-    
-                if L == 0: 
-                    PM1 = 0.25*SQ( CA ) + SQ( CB ) / 12. + ( 5./3. )*np.real( CA*B2C ) + 5.*B2SQ
-    
-                if L == 1:
-                    PM1 = np.real( CB * ( CAC / 6.+ B2C ) )
-    
-                if L == 2:
-                    PM1 = SQ( CB ) / 30.+ ( 20./7. )*B2SQ + ( 2./3. )*np.real( CA*B2C )
-    
-                if L == 3:
-                    PM1 = ( 2./7. ) * np.real( CB*B2C )
-    
-                if L == 4:
-                    PM1 = ( 40./63. ) * B2SQ
-    
-                if CALCMO[ 0 ]:
-                    PMOM[ L, 1 ] = PM1
-    
-    
-            if IPOLZN == 0 or CALCMO[ 1 ]:
-    
-                if L == 0: 
-                    PM2 = 0.25*SQ( CAT ) + SQ( CBT ) / 12. + ( 5./ 3. ) * \
-                          np.real( CAT*A2C ) + 5.*A2SQ
-    
-                if L == 1: 
-                    PM2 = np.real( CBT * ( np.conjugate( CAT ) / 6.+ A2C ) )
-    
-                if L == 2: 
-                    PM2 = SQ( CBT ) / 30. + ( 20./7. ) * A2SQ + ( 2./3. ) * \
-                          np.real( CAT*A2C )
-    
-                if L == 3: 
-                    PM2 = ( 2./7. ) * np.real( CBT*A2C )
-    
-                if L == 4: 
-                    PM2 = ( 40./63. ) * A2SQ
-    
-                if CALCMO[ 1 ]: 
-                    PMOM[ L, 2 ] = PM2
-    
-    
-            if IPOLZN == 0:
-    
-                PMOM[ L, 1 ] = 0.5*( PM1 + PM2 )
-                    
-                #The break serves as the go-to/continue labeled 20 in the Fortran code
-                break
-    
-    
-            if CALCMO[ 2 ]:
-    
-                if L == 0: 
-                    PMOM[ L, 3 ] = 0.25 * np.real( CAC*CAT + CG + 20.* B2C * A[ 1 ] )
-    
-                if L == 1: 
-                    PMOM[ L, 3 ] = np.real( CAC*CBT + CBC*CAT + 3.*CH ) / 12.
-    
-                if L == 2: 
-                    PMOM[ L, 3 ] = 0.1 * np.real( CG + ( 200./7. ) * B2C * A[ 1 ] )
-    
-                if L == 3: 
-                    PMOM[ L, 3 ] = np.real( CH ) / 14.
-    
-                if L == 4: 
-                    PMOM[ L, 3 ] = 40./63.* np.real( B2C*A[ 1 ] )
-    
-    
-            if CALCMO[ 3 ]:
-    
-                if L == 0: 
-                    PMOM[ L, 4 ] = 0.25 * np.imag( CAC*CAT + CG + 20.* B2C * A[ 1 ] )
-    
-                if L == 1: 
-                    PMOM[ L, 4 ] = np.imag( CAC*CBT + CBC*CAT + 3.*CH ) / 12.
-    
-                if L == 2: 
-                    PMOM[ L, 4 ] = 0.1 * np.imag( CG + ( 200./7. ) * B2C * A[ 1 ] )
-    
-                if L == 3: 
-                    PMOM[ L, 4 ] = np.imag( CH ) / 14.
-    
-                if L == 4: 
-                    PMOM[ L, 4 ] = 40./63.* np.imag( B2C*A[ 1 ] )
 
 
 
@@ -1340,18 +546,18 @@ def BIGA( CIOR, XX, NTRM, NOABS, YESANG, RBIGA, CBIGA ):
     
     """
         Calculate logarithmic derivatives of J-Bessel-function
+        
     Input :  CIOR, XX, NTRM, NOABS, YESANG  (defined in MIEV0)
     Output :  RBIGA or CBIGA  (defined in MIEV0)
     Routines called :  CONFRA
     
-    
     INTERNAL VARIABLES :
     
-        CONFRA     Value of Lentz continued fraction for CBIGA(NTRM),
-                       used to initialize downward recurrence.
+        CONFRA     Value of Lentz continued fraction for cBigA(NTrm),
+                   used to initialize downward recurrence.
         DOWN       = True, use down-recurrence.  False, do not.
         F1,F2,F3   Arithmetic statement functions used in determining
-                       whether to use up-  or down-recurrence ( Ref. 2, Eqs. 6-8 )
+                   whether to use up-  or down-recurrence ( Ref. 2, Eqs. 6-8 )
         MRE        Real refractive index
         MIM        Imaginary refractive index
         REZINV     1 / ( MRE * XX ); temporary variable for recurrence
@@ -1468,7 +674,8 @@ def BIGA( CIOR, XX, NTRM, NOABS, YESANG, RBIGA, CBIGA ):
         else:
             #Absorptive case
             CTMP = np.exp( - complex( 0., 2. ) * CIOR * XX )
-            CBIGA[ 0 ] = - ZINV + ( 1.-CTMP )/( ZINV * ( 1.-CTMP ) - complex( 0., 1. )*( 1.+CTMP ) )
+            CBIGA[ 0 ] = - ZINV + ( 1.-CTMP ) / ( ZINV * ( 1.-CTMP ) - \
+                         complex( 0., 1. )*( 1.+CTMP ) )
     
             for N in range( 2 - 1, NTRM ):
                 CBIGA[ N ] = - ( (N + 1)*ZINV ) + 1.0 / ( ( (N + 1)*ZINV ) - CBIGA[ N-1 ] )
@@ -1589,33 +796,33 @@ def CONFRA( N, ZINV ):
                    
                     
                     
-def MIPRNT( PRNT, XX, PERFCT, CREFIN, NUMANG, XMU, QEXT, QSCA, GQSC, NMOM, IPOLZN, MOMDIM, 
-            CALCMO, PMOM, SFORW, SBACK, TFORW, TBACK, S1, S2 ):
+def MIPRNT( PRNT, XX, PERFCT, CREFIN, NUMANG, XMU, QEXT, QSCA, GQSC, SFORW,
+            SBACK, TFORW, TBACK, S1, S2 ):
     
     """
         Print scattering quantities of a single particle
-    
+        (NoPMOM version)
+        
     
     IMPLICIT NONE
     
     .. Scalar Arguments ..
     
     LOGICAL   PERFCT
-    INTEGER   IPOLZN, MOMDIM, NMOM, NUMANG
+    INTEGER   NUMANG
     REAL      GQSC, QEXT, QSCA, XX
     COMPLEX   CREFIN, SBACK, SFORW
     ..
     .. Array Arguments ..
     
-    LOGICAL   CALCMO( * ), PRNT( * )
-    REAL      PMOM( 0:MOMDIM, * ), XMU( * )
+    LOGICAL   PRNT( * )
+    REAL      XMU( * )
     COMPLEX   S1( * ), S2( * ), TBACK( * ), TFORW( * )
     ..
     .. Local Scalars ..
         
-    CHARACTER FMAT*22
-    INTEGER   I, J, M
-    REAL      FNORM, I1, I2
+    INTEGER   I
+    REAL      I1, I2
     ..
     .. Intrinsic Functions ..
     
@@ -1623,7 +830,6 @@ def MIPRNT( PRNT, XX, PERFCT, CREFIN, NUMANG, XMU, QEXT, QSCA, GQSC, NMOM, IPOLZ
     ..
     """    
     
-        
     if PERFCT: 
         print 'Perfectly Conducting Case, size parameter =', XX
     
@@ -1655,30 +861,6 @@ def MIPRNT( PRNT, XX, PERFCT, CREFIN, NUMANG, XMU, QEXT, QSCA, GQSC, NMOM, IPOLZ
         print '   scattering:', QSCA
         print '   absorption:', QEXT-QSCA
         print '   rad. pressure:', QEXT-GQSC
-            
-        if NMOM > 0: 
-    
-            print ' Normalized moments of : '
-    
-            if IPOLZN == 0: 
-                print 'Phase Fcn'
-    
-            if IPOLZN > 0: 
-                print 'M1           M2          S21          D21'
-    
-            if IPOLZN < 0:
-                print 'R1           R2           R3           R4'
-    
-            FNORM = 4. / ( XX**2 * QSCA )
-    
-            for M in range( 0, NMOM + 1 ):
-    
-                print '      Moment no.', M
-    
-                for J in range( 1, 4 + 1 ):
-    
-                    if CALCMO[ J ]:
-                        print FNORM * PMOM[ M, J ]
                          
                     
                     
@@ -1837,7 +1019,8 @@ def SMALL2( XX, CIOR, CALCQE, NUMANG, XMU, QEXT, QSCA, GQSC, SFORW,
     B[ 0 ] = ( XX**2 / 30. ) * CTMP * ( 1.+ ( CIORSQ / 35.- 1./ 14. )*XX**2 ) / \
              ( 1.- ( CIORSQ / 15.- 1./ 6. )*XX**2 )
     
-    A[ 1 ] = ( 0.1*XX**2 )*CTMP*( 1.- XX**2 / 14. )/( 2.*CIORSQ + 3. - ( CIORSQ / 7.- 0.5 )*XX**2 )
+    A[ 1 ] = ( 0.1*XX**2 )*CTMP*( 1.- XX**2 / 14. ) / ( 2.*CIORSQ + 3. - \
+             ( CIORSQ / 7.- 0.5 )*XX**2 )
     
     QSCA   = 6.* XX**4 * ( SQ( A[ 0 ] ) + SQ( B[ 0 ] ) + FIVTHR*SQ( A[ 1 ] ) )
     GQSC   = 6.* XX**4 * np.real( A[ 0 ]*np.conjugate( A[ 1 ] + B[ 0 ] ) )
@@ -1867,13 +1050,14 @@ def SMALL2( XX, CIOR, CALCQE, NUMANG, XMU, QEXT, QSCA, GQSC, SFORW,
     
     
     
-def TESTMI( COMPAR, XX, CREFIN, MIMCUT, PERFCT, ANYANG, NMOM, IPOLZN, NUMANG, XMU, QEXT, 
-            QSCA, GQSC, SFORW, SBACK, S1, S2, TFORW, TBACK, PMOM, MOMDIM ):
+def TESTMI( COMPAR, XX, CREFIN, MIMCUT, PERFCT, ANYANG, NUMANG, XMU, QEXT, 
+            QSCA, GQSC, SFORW, SBACK, S1, S2, TFORW, TBACK ):
     
     """
         Set up to run test case when  COMPAR = False;  when  = True,
         compare Mie code test case results with correct answers
         and abort if even one result is inaccurate.
+        (NoPMOM version)
     
         The test case is :  Mie size parameter = 10
                             refractive index   = 1.5 - 0.1 i
@@ -1897,26 +1081,25 @@ def TESTMI( COMPAR, XX, CREFIN, MIMCUT, PERFCT, ANYANG, NMOM, IPOLZN, NUMANG, XM
     .. Scalar Arguments ..
     
     LOGICAL   ANYANG, COMPAR, PERFCT
-    INTEGER   IPOLZN, MOMDIM, NMOM, NUMANG
+    INTEGER   NUMANG
     REAL      GQSC, MIMCUT, QEXT, QSCA, XX
     COMPLEX   CREFIN, SBACK, SFORW
     ..
     .. Array Arguments ..
     
-    REAL      PMOM( 0:MOMDIM, * ), XMU( * )
+    REAL      XMU( * )
     COMPLEX   S1( * ), S2( * ), TBACK( * ), TFORW( * )
     ..
     .. Local Scalars ..
     
     LOGICAL   ANYSAV, OK, PERSAV
-    INTEGER   IPOSAV, M, N, NMOSAV, NUMSAV
+    INTEGER   N, NUMSAV
     REAL      ACCUR, CALC, EXACT, MIMSAV, TESTGQ, TESTQE, TESTQS, XMUSAV, XXSAV
     COMPLEX   CRESAV, TESTS1, TESTS2, TESTSB, TESTSF
     ..
     .. Local Arrays ..
     
-    LOGICAL   CALCMO( 4 ), PRNT( 2 )
-    REAL      TESTPM( 0:1 )
+    LOGICAL   PRNT( 2 )
     COMPLEX   TESTTB( 2 ), TESTTF( 2 )
     ..
     .. External Functions ..
@@ -1936,7 +1119,7 @@ def TESTMI( COMPAR, XX, CREFIN, MIMCUT, PERFCT, ANYANG, NMOM, IPOLZN, NUMANG, XM
     
     LOGICAL WRONG
     ..
-    SAVE    XXSAV, CRESAV, MIMSAV, PERSAV, ANYSAV, NMOSAV, IPOSAV, NUMSAV, XMUSAV
+    SAVE    XXSAV, CRESAV, MIMSAV, PERSAV, ANYSAV, NUMSAV, XMUSAV
           
     DATA    TESTQE / 2.459791 /,
             TESTQS / 1.235144 /,
@@ -1947,7 +1130,6 @@ def TESTMI( COMPAR, XX, CREFIN, MIMCUT, PERFCT, ANYANG, NMOM, IPOLZN, NUMANG, XM
             TESTS2 / ( 0.05669755, 0.5425681) /,
             TESTTF / ( 12.95238, -136.6436 ), ( 48.54238, 133.4656 ) /,
             TESTTB / ( 41.88414, -15.57833 ), ( 43.37758, -15.28196 )/
-            TESTPM / 227.1975, 183.6898 /
          
     DATA    ACCUR / 1.E-4 /
     ..
@@ -1966,7 +1148,6 @@ def TESTMI( COMPAR, XX, CREFIN, MIMCUT, PERFCT, ANYANG, NMOM, IPOLZN, NUMANG, XM
     TESTS2 = 0.05669755 + 0.5425681j 
     TESTTF = [ 12.95238 - 136.6436j, 48.54238 + 133.4656j ] 
     TESTTB = [ 41.88414 - 15.57833j, 43.37758 - 15.28196j ]
-    TESTPM = [ 227.1975, 183.6898 ]
          
     ACCUR = 1.E-4 
     
@@ -1981,8 +1162,6 @@ def TESTMI( COMPAR, XX, CREFIN, MIMCUT, PERFCT, ANYANG, NMOM, IPOLZN, NUMANG, XM
         MIMSAV = MIMCUT
         PERSAV = PERFCT
         ANYSAV = ANYANG
-        NMOSAV = NMOM
-        IPOSAV = IPOLZN
         NUMSAV = NUMANG
         XMUSAV = XMU[ 0 ]
         #Reset input values for test case
@@ -1991,8 +1170,6 @@ def TESTMI( COMPAR, XX, CREFIN, MIMCUT, PERFCT, ANYANG, NMOM, IPOLZN, NUMANG, XM
         MIMCUT = 0.0
         PERFCT = False
         ANYANG = True
-        NMOM = 1
-        IPOLZN = -1
         NUMANG = 1
         XMU[ 0 ] = -0.7660444
     
@@ -2035,26 +1212,15 @@ def TESTMI( COMPAR, XX, CREFIN, MIMCUT, PERFCT, ANYANG, NMOM, IPOLZN, NUMANG, XM
             if WRONG( np.real( TBACK[ N ] ), np.real( TESTTB[ N ] ) ) or \
                WRONG( np.imag( TBACK[ N ] ), np.imag( TESTTB[ N ] ) ):
                 OK =  TSTBAD( 'TBACK', abs( ( TBACK[ N ] - TESTTB[ N ] ) / TESTTB[ N ] ) )
-                
-                
-        for M in range( 0, 1 + 1 ):
-    
-            if WRONG( PMOM[ M, 1 ], TESTPM[ M ] ):
-                OK =  TSTBAD( 'PMOM', abs( ( PMOM[ M, 1 ] - TESTPM[ M ] ) / TESTPM[ M ] ) )
-                    
+
                     
         if not OK:
                 
             PRNT[ 0 ] = True
             PRNT[ 1 ] = True
-            CALCMO[ 0 ] = True
-            CALCMO[ 1 ] = False
-            CALCMO[ 2 ] = False
-            CALCMO[ 3 ] = False
     
-            return MIPRNT( PRNT, XX, PERFCT, CREFIN, NUMANG, XMU, QEXT, QSCA, GQSC, NMOM, 
-                           IPOLZN, MOMDIM, CALCMO, PMOM, SFORW, SBACK, TFORW, 
-                           TBACK, S1, S2 )
+            return MIPRNT( PRNT, XX, PERFCT, CREFIN, NUMANG, XMU, QEXT, QSCA,
+                           GQSC, SFORW, SBACK, TFORW, TBACK, S1, S2 )
     
             return ErrMsg( 'MIEV0 -- Self-test failed', True )
     
