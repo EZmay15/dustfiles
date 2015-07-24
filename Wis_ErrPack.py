@@ -1,7 +1,9 @@
 
-# coding: utf-8
 
-# In[10]:
+#The original Wiscombe ErrPack Fortran file is also in the dustfiles repository for
+#reference/comparison as ErrPackcopy.f! I found the code on the page "Mie Scattering" by
+#Scott Prahl, who had zipped a version of Wiscombe's code and made it
+#downloadable (http://omlc.org/software/mie/)
 
 def ErrMsg( MESSAG, FATAL ):
     
@@ -47,6 +49,7 @@ def ErrMsg( MESSAG, FATAL ):
         if NUMMSG <= MAXMSG:
             print '******WARNING***** ', MESSAG
             break
+        
         else:
             print '****** TOO MANY WARNING MESSAGES -- They will no longer be printed *******'
             MSGLIM = True

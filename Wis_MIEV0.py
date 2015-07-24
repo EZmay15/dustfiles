@@ -1,8 +1,9 @@
 
 
-#The original Wiscombe Fortran code is also in the dustfiles repository for reference/comparison
-#as MIEV0copy.f! I found the code on the page "Mie Scattering" by Scott Prahl, who had zipped
-#a version of Wiscombe's code and made it downloadable (http://omlc.org/software/mie/)
+#The original Wiscombe MIEV0 Fortran file is also in the dustfiles repository for
+#reference/comparison as MIEV0copy.f! I found the code on the page "Mie Scattering" by
+#Scott Prahl, who had zipped a version of Wiscombe's code and made it
+#downloadable (http://omlc.org/software/mie/)
 
 
 #Notes:
