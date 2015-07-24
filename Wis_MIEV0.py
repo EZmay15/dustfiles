@@ -1,6 +1,7 @@
 
 
-#The original Wiscombe Fortran code is also in the dustfiles repository for reference/comparison!
+#The original Wiscombe Fortran code is also in the dustfiles repository for reference/comparison
+#as MIEV0.f!
 
 
 #Notes:
