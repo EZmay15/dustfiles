@@ -15,9 +15,9 @@
 #Complex numbers have been changed from Fortran's (0., 0.) format to Python's 0. + 0.j format
 #The original code exclusively used uppercase; any lowercase in this code should be either an
 #intrinsic function from Python, a control flow statement, or a comment.
-
-
-#Potential pitfalls! (coming soon) 
+#If output is formatted weirdly, the first place to look in this code would be the print
+#statements, since those have been converted in the simplest way possible and may have lost
+#some specifications possible with Fortran's "write" statement.
 
 import numpy as np
 
