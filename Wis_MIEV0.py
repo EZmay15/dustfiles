@@ -1,14 +1,16 @@
 
 
 #The original Wiscombe Fortran code is also in the dustfiles repository for reference/comparison
-#as MIEV0copy.f!
+#as MIEV0copy.f! I found the code on the page "Mie Scattering" by Scott Prahl, who had zipped
+#a version of Wiscombe's code and made it downloadable (http://omlc.org/software/mie/)
 
 
 #Notes:
 #Most for loops in this code loop through calling elements of arrays. Because Fortran
 #arrays are indexed starting from 1 while Python arrays are indexed from 0, I changed
 #many (but not all) loops to begin from 0 instead of 1. Many references to list elements are
-#also corrected in this way (ex. XMU[1] -> XMU[0]).
+#also corrected in this way (ex. XMU[1] -> XMU[0]). Operations that would be affected by these
+#changes have been edited as well (often by adding or subtracting 1).
 #Complex numbers have been changed from Fortran's (0., 0.) format to Python's 0. + 0.j format
 #The original code exclusively used uppercase; any lowercase in this code should be either an
 #intrinsic function from Python, a control flow statement, or a comment.
@@ -184,8 +186,8 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
     
     if PASS1: 
         return TESTMI( False, XX, CREFIN, MIMCUT, PERFCT, ANYANG, NMOM, IPOLZN, 
-                          NUMANG, XMU, QEXT, QSCA, GQSC, SFORW, SBACK, S1, S2, 
-                          TFORW, TBACK, PMOM, MOMDIM )
+                       NUMANG, XMU, QEXT, QSCA, GQSC, SFORW, SBACK, S1, S2, 
+                       TFORW, TBACK, PMOM, MOMDIM )
             
     #The while loops serve as the go-to/continues labeled 10 and 100 in the Fortran code
     while True:
@@ -195,14 +197,14 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
             #Check input and calculate certain variables from input 
             
             return CKINMI( NUMANG, MAXANG, XX, PERFCT, CREFIN, MOMDIM, NMOM, IPOLZN, 
-                              ANYANG, XMU, CALCMO, NPQUAN )
+                           ANYANG, XMU, CALCMO, NPQUAN )
             
             
             if PERFCT and XX <= 0.1:
             #Use totally-reflecting small-particle limit   
     
                 return SMALL1( XX, NUMANG, XMU, QEXT, QSCA, GQSC, SFORW, SBACK, 
-                                  S1, S2, TFORW, TBACK, LITA, LITB ) 
+                               S1, S2, TFORW, TBACK, LITA, LITB ) 
                 
                 NTRM = 2
                 
@@ -230,7 +232,7 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
                     #Use general-refractive-index small-particle limit ( Ref. 2, p. 1508 )
     
                     return SMALL2( XX, CIOR, not NOABS, NUMANG, XMU, QEXT, QSCA,
-                                      GQSC, SFORW, SBACK, S1, S2, TFORW, TBACK, LITA, LITB )
+                                   GQSC, SFORW, SBACK, S1, S2, TFORW, TBACK, LITA, LITB )
                     
                     NTRM = 2
                     
@@ -368,7 +370,7 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
                 SBACK      = SBACK      + ( MM * TWONP1 ) * ( AN - BN )
                 TBACK[ 0 ] = TBACK[ 0 ] + ( MM * TCOEF )  * ( AN + BN )
                 GQSC       = GQSC + (FN - RN) * np.real( ANM1 * np.conjugate( AN ) + BNM1 * \
-                                 np.conjugate( BN ) ) + COEFF * np.real( AN * np.conjugate( BN ) )
+                             np.conjugate( BN ) ) + COEFF * np.real( AN * np.conjugate( BN ) )
     
     
                 if YESANG:
@@ -463,9 +465,6 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
                     for J in range( 0, NANGD2 ):
                         S1[ NUMANG - J ] = 0.5*( SPS[ J ] + SMS[ J ] )
                         S2[ NUMANG - J ] = 0.5*( SPS[ J ] - SMS[ J ] )
-#with range 1 to nangd2 + 1, code used to be S1[ NUMANG + 1 - J ] = 0.5*( SPS[ J ] + SMS[ J ] )
-#                                            S2[ NUMANG + 1 - J ] = 0.5*( SPS[ J ] - SMS[ J ] )
-                        
 
             break
             #end of while loop representing the go-to/continue labeled 100 in the Fortran code
@@ -495,8 +494,8 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
             #otherwise restore user input and proceed
     
             return TESTMI( True, XX, CREFIN, MIMCUT, PERFCT, ANYANG, NMOM, IPOLZN, NUMANG, 
-                               XMU, QEXT, QSCA, GQSC, SFORW, SBACK, S1, S2, TFORW, 
-                               TBACK, PMOM, MOMDIM )
+                           XMU, QEXT, QSCA, GQSC, SFORW, SBACK, S1, S2, TFORW, 
+                           TBACK, PMOM, MOMDIM )
                     
             PASS1 = False
             
@@ -504,14 +503,14 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
         else:
             if PRNT[ 0 ] or PRNT[ 1 ]:
                 return MIPRNT( PRNT, XX, PERFCT, CREFIN, NUMANG, XMU, QEXT, QSCA, GQSC, NMOM, 
-                                  IPOLZN, MOMDIM, CALCMO, PMOM, SFORW, SBACK, TFORW, 
-                                  TBACK, S1, S2 )
+                               IPOLZN, MOMDIM, CALCMO, PMOM, SFORW, SBACK, TFORW, 
+                               TBACK, S1, S2 )
             break
             #end of while loop representing go-to/continue labeled 10 in Fortran code    
             
             
 def CKINMI( NUMANG, MAXANG, XX, PERFCT, CREFIN, MOMDIM, NMOM, IPOLZN, 
-               ANYANG, XMU, CALCMO, NPQUAN ):
+            ANYANG, XMU, CALCMO, NPQUAN ):
     
     """     
         Check for bad input to MIEV0 and calculate CALCMO, NPQUAN
@@ -779,15 +778,15 @@ def LPCOEF( NTRM, NMOM, IPOLZN, MOMDIM, CALCMO, NPQUAN, A, B, PMOM ):
     CM[ NTRM ] = ( 1. - RECIP[ NTRM ] ) * B[ NTRM - 1 ]
     DM[ NTRM ] = ( 1. - RECIP[ NTRM ] ) * A[ NTRM - 1 ]
     CM[ NTRM - 1 ] = ( RECIP[ NTRM - 1 ] + RECIP[ NTRM ] ) * A[ NTRM - 1 ] + \
-                      ( 1. - RECIP[ NTRM - 1 ] )*B[ NTRM - 1 - 1 ]
+                     ( 1. - RECIP[ NTRM - 1 ] )*B[ NTRM - 1 - 1 ]
     DM[ NTRM - 1 ] = ( RECIP[ NTRM - 1 ] + RECIP[ NTRM ] ) * B[ NTRM - 1 ] + \
-                      ( 1. - RECIP[ NTRM - 1 ] )*A[ NTRM - 1 - 1 ]
+                     ( 1. - RECIP[ NTRM - 1 ] )*A[ NTRM - 1 - 1 ]
     
     for K in range( NTRM - 1 - 1, 2 - 1 - 1 , -1 ):
-        CM[ K ] = CM[ K+2 ] - ( 1. + RECIP[ K+1 ] ) * B[ K+1 ] + ( RECIP[ K ] + \
-                      RECIP[ K+1 ] ) * A[ K ] + ( 1. - RECIP[ K ] ) * B[ K-1 ]
-        DM[ K ] = DM[ K+2 ] - ( 1. + RECIP[ K+1 ] ) * A[ K+1 ] + ( RECIP[ K ] + \
-                      RECIP[ K+1 ] ) * B[ K ] + ( 1. - RECIP[ K ] ) * A[ K-1 ]
+        CM[ K ] = CM[ K+2 ] - ( 1. + RECIP[ K+1 ] ) * B[ K+1 ] + \
+                  ( RECIP[ K ] + RECIP[ K+1 ] ) * A[ K ] + ( 1. - RECIP[ K ] ) * B[ K-1 ]
+        DM[ K ] = DM[ K+2 ] - ( 1. + RECIP[ K+1 ] ) * A[ K+1 ] + \
+                  ( RECIP[ K ] + RECIP[ K+1 ] ) * B[ K ] + ( 1. - RECIP[ K ] ) * A[ K-1 ]
     
     CM[ 0 ] = CM[ 2 ] + 1.5 * ( A[ 0 ] - B[ 1 ] )
     DM[ 0 ] = DM[ 2 ] + 1.5 * ( B[ 0 ] - A[ 1 ] )
@@ -891,7 +890,7 @@ def LPCOEF( NTRM, NMOM, IPOLZN, MOMDIM, CALCMO, NPQUAN, A, B, PMOM ):
     
                 for M in range( LD2, MMAX - I + 1 ):
                     SUM = SUM + AM[ M ] * ( np.real( C[ M-I ] * np.conjugate( C[ M + I + IDEL - \
-                            1 ] ) ) + np.real( D[ M-I ] * np.conjugate( D[ M+I+IDEL - 1 ] ) ) )
+                          1 ] ) ) + np.real( D[ M-I ] * np.conjugate( D[ M+I+IDEL - 1 ] ) ) )
     
                 PMOM[ L, 1 ] = PMOM[ L, 1 ] + BIDEL[ I ] * SUM
     
@@ -934,7 +933,7 @@ def LPCOEF( NTRM, NMOM, IPOLZN, MOMDIM, CALCMO, NPQUAN, A, B, PMOM ):
                 #vectorizable loop
                 for M in range( LD2, MMAX - I + 1 ):
                     SUM = SUM + AM[ M ] * ( np.real( C[ M-I ] * np.conjugate( D[ M + I + IDEL - \
-                            1 ] ) ) + np.real( C[ M+I+IDEL - 1 ] * np.conjugate( D[ M-I ] ) ) )
+                          1 ] ) ) + np.real( C[ M+I+IDEL - 1 ] * np.conjugate( D[ M-I ] ) ) )
     
                 PMOM[ L, 3 ] = PMOM[ L, 3 ] + BIDEL[ I ] * SUM
     
@@ -950,7 +949,7 @@ def LPCOEF( NTRM, NMOM, IPOLZN, MOMDIM, CALCMO, NPQUAN, A, B, PMOM ):
                 #vectorizable loop
                 for M in range( LD2, MMAX - I + 1 ):
                     SUM = SUM + AM[ M ] * ( np.imag( C[ M-I ] * np.conjugate( D[ M + I + IDEL - \
-                            1 ] ) ) + np.imag( C[ M+I+IDEL - 1 ] * np.conjugate( D[ M-I ] ) ) )
+                          1 ] ) ) + np.imag( C[ M+I+IDEL - 1 ] * np.conjugate( D[ M-I ] ) ) )
     
                 PMOM[ L, 4 ] = PMOM[ L, 4 ] + BIDEL[ I ] * SUM
     
@@ -1252,14 +1251,14 @@ def LPCO2T( NMOM, IPOLZN, MOMDIM, CALCMO, A, B, PMOM ):
     
                 if L == 0: 
                     PM2 = 0.25*SQ( CAT ) + SQ( CBT ) / 12. + ( 5./ 3. ) * \
-                              np.real( CAT*A2C ) + 5.*A2SQ
+                          np.real( CAT*A2C ) + 5.*A2SQ
     
                 if L == 1: 
                     PM2 = np.real( CBT * ( np.conjugate( CAT ) / 6.+ A2C ) )
     
                 if L == 2: 
                     PM2 = SQ( CBT ) / 30. + ( 20./7. ) * A2SQ + ( 2./3. ) * \
-                              np.real( CAT*A2C )
+                          np.real( CAT*A2C )
     
                 if L == 3: 
                     PM2 = ( 2./7. ) * np.real( CBT*A2C )
@@ -1440,7 +1439,7 @@ def BIGA( CIOR, XX, NTRM, NOABS, YESANG, RBIGA, CBIGA ):
         if NOABS:
             #No-absorption case
             RTMP   = np.sin( MRE*XX )
-            RBIGA[ 0 ] = -REZINV + RTMP /( RTMP*REZINV - np.cos( MRE*XX ) )
+            RBIGA[ 0 ] = -REZINV + RTMP / ( RTMP*REZINV - np.cos( MRE*XX ) )
     
             for N in range( 2 - 1, NTRM ):
                 RBIGA[ N ] = -( (N + 1)*REZINV ) + 1.0 / ( ( (N + 1)*REZINV ) - RBIGA[ N - 1 ] )
@@ -1448,8 +1447,7 @@ def BIGA( CIOR, XX, NTRM, NOABS, YESANG, RBIGA, CBIGA ):
         else:
             #Absorptive case
             CTMP = np.exp( - complex( 0., 2. ) * CIOR * XX )
-            CBIGA[ 0 ] = - ZINV + ( 1.-CTMP ) /( ZINV * ( 1.-CTMP ) - \
-                             complex( 0., 1. )*( 1.+CTMP ) )
+            CBIGA[ 0 ] = - ZINV + ( 1.-CTMP )/( ZINV * ( 1.-CTMP ) - complex( 0., 1. )*( 1.+CTMP ) )
     
             for N in range( 2 - 1, NTRM ):
                 CBIGA[ N ] = - ( (N + 1)*ZINV ) + 1.0 / ( ( (N + 1)*ZINV ) - CBIGA[ N-1 ] )
@@ -1571,7 +1569,7 @@ def CONFRA( N, ZINV ):
                     
                     
 def MIPRNT( PRNT, XX, PERFCT, CREFIN, NUMANG, XMU, QEXT, QSCA, GQSC, NMOM, IPOLZN, MOMDIM, 
-               CALCMO, PMOM, SFORW, SBACK, TFORW, TBACK, S1, S2 ):
+            CALCMO, PMOM, SFORW, SBACK, TFORW, TBACK, S1, S2 ):
     
     """
         Print scattering quantities of a single particle
@@ -1663,7 +1661,7 @@ def MIPRNT( PRNT, XX, PERFCT, CREFIN, NUMANG, XMU, QEXT, QSCA, GQSC, NMOM, IPOLZ
                          
                     
                     
-def SMALL1(XX, NUMANG, XMU, QEXT, QSCA, GQSC, SFORW, SBACK, S1, S2, TFORW, TBACK, A, B):
+def SMALL1( XX, NUMANG, XMU, QEXT, QSCA, GQSC, SFORW, SBACK, S1, S2, TFORW, TBACK, A, B ):
     
     """
         Small-particle limit of Mie quantities in totally reflecting
@@ -1717,10 +1715,8 @@ def SMALL1(XX, NUMANG, XMU, QEXT, QSCA, GQSC, SFORW, SBACK, S1, S2, TFORW, TBACK
         np.real( CTMP )**2 + np.imag( CTMP )**2
     
     
-    A[ 0 ] = complex( 0., TWOTHR*( 1. - 0.2*XX**2 ) ) / \
-                 complex( 1. - 0.5*XX**2, TWOTHR*XX**3 )
-    B[ 0 ] = complex( 0., -( 1. - 0.1*XX**2 ) / 3. ) / \
-                 complex( 1. + 0.5*XX**2, -XX**3 / 3. )
+    A[ 0 ] = complex( 0., TWOTHR*( 1. - 0.2*XX**2 ) ) / complex( 1. - 0.5*XX**2, TWOTHR*XX**3 )
+    B[ 0 ] = complex( 0., -( 1. - 0.1*XX**2 ) / 3. ) / complex( 1. + 0.5*XX**2, -XX**3 / 3. )
     
     A[ 1 ] = complex( 0.,   XX**2 / 30. )
     B[ 1 ] = complex( 0., - XX**2 / 45. )
@@ -1728,7 +1724,7 @@ def SMALL1(XX, NUMANG, XMU, QEXT, QSCA, GQSC, SFORW, SBACK, S1, S2, TFORW, TBACK
     QSCA   = 6.* XX**4 *( SQ( A[ 0 ] ) + SQ( B[ 0 ] ) + FIVTHR*( SQ( A[ 1 ] ) + SQ( B[ 1 ] ) ) )
     QEXT   = QSCA
     GQSC   = 6.* XX**4 * np.real( A[ 0 ]*np.conjugate( A[ 1 ] + B[ 0 ] ) + \
-                 ( B[ 0 ] + FIVNIN*A[ 1 ] )*np.conjugate( B[ 1 ] ) )
+             ( B[ 0 ] + FIVNIN*A[ 1 ] )*np.conjugate( B[ 1 ] ) )
     
     RTMP   = 1.5 * XX**3
     SFORW  = RTMP * ( A[ 0 ] + B[ 0 ] + FIVTHR * ( A[ 1 ] + B[ 1 ] ) )
@@ -1740,10 +1736,10 @@ def SMALL1(XX, NUMANG, XMU, QEXT, QSCA, GQSC, SFORW, SBACK, S1, S2, TFORW, TBACK
         
         
     for J in range( 0, NUMANG ):
-        S1[ J ] = RTMP*( A[ 0 ] + B[ 0 ]*XMU[ J ] + FIVTHR*( A[ 1 ]*XMU[ J ] + 
-                    B[ 1 ]*( 2.*XMU[ J ]**2 - 1.) ) )
-        S2[ J ] = RTMP*( B[ 0 ] + A[ 0 ]*XMU[ J ] + FIVTHR*( B[ 1 ]*XMU[ J ] + 
-                    A[ 1 ]*( 2.*XMU[ J ]**2 - 1.) ) )
+        S1[ J ] = RTMP*( A[ 0 ] + B[ 0 ]*XMU[ J ] + FIVTHR*( A[ 1 ]*XMU[ J ] + \
+                  B[ 1 ]*( 2.*XMU[ J ]**2 - 1.) ) )
+        S2[ J ] = RTMP*( B[ 0 ] + A[ 0 ]*XMU[ J ] + FIVTHR*( B[ 1 ]*XMU[ J ] + \
+                  A[ 1 ]*( 2.*XMU[ J ]**2 - 1.) ) )
     
     #Recover actual Mie coefficients
     A[ 0 ] = XX**3 * A[ 0 ]
@@ -1753,8 +1749,8 @@ def SMALL1(XX, NUMANG, XMU, QEXT, QSCA, GQSC, SFORW, SBACK, S1, S2, TFORW, TBACK
              
         
         
-def SMALL2( XX, CIOR, CALCQE, NUMANG, XMU, QEXT, QSCA, GQSC, SFORW, 
-               SBACK, S1, S2, TFORW, TBACK, A, B ):
+def SMALL2( XX, CIOR, CALCQE, NUMANG, XMU, QEXT, QSCA, GQSC, SFORW,
+            SBACK, S1, S2, TFORW, TBACK, A, B ):
         
     """    
         Small-particle limit of Mie quantities for general refractive
@@ -1814,14 +1810,13 @@ def SMALL2( XX, CIOR, CALCQE, NUMANG, XMU, QEXT, QSCA, GQSC, SFORW,
     CIORSQ = CIOR**2
     CTMP   = complex( 0., TWOTHR )*( CIORSQ - 1. )
     A[ 0 ] = CTMP*( 1. - 0.1*XX**2 + ( CIORSQ / 350.+ 1./ 280. )*XX**4 ) / \
-                 ( CIORSQ + 2.+ ( 1.- 0.7*CIORSQ )*XX**2 - ( CIORSQ**2 / 175. - \
-                 0.275*CIORSQ + 0.25 )*XX**4 + XX**3 * CTMP*( 1.- 0.1*XX**2 ) )
+             ( CIORSQ + 2.+ ( 1.- 0.7*CIORSQ )*XX**2 - ( CIORSQ**2 / 175. - \
+             0.275*CIORSQ + 0.25 )*XX**4 + XX**3 * CTMP*( 1.- 0.1*XX**2 ) )
     
     B[ 0 ] = ( XX**2 / 30. ) * CTMP * ( 1.+ ( CIORSQ / 35.- 1./ 14. )*XX**2 ) / \
-                 ( 1.- ( CIORSQ / 15.- 1./ 6. )*XX**2 )
+             ( 1.- ( CIORSQ / 15.- 1./ 6. )*XX**2 )
     
-    A[ 1 ] = ( 0.1*XX**2 )*CTMP*( 1.- XX**2 / 14. ) / ( 2.*CIORSQ + 3. - 
-                 ( CIORSQ / 7.- 0.5 )*XX**2 )
+    A[ 1 ] = ( 0.1*XX**2 )*CTMP*( 1.- XX**2 / 14. )/( 2.*CIORSQ + 3. - ( CIORSQ / 7.- 0.5 )*XX**2 )
     
     QSCA   = 6.* XX**4 * ( SQ( A[ 0 ] ) + SQ( B[ 0 ] ) + FIVTHR*SQ( A[ 1 ] ) )
     GQSC   = 6.* XX**4 * np.real( A[ 0 ]*np.conjugate( A[ 1 ] + B[ 0 ] ) )
@@ -1852,7 +1847,7 @@ def SMALL2( XX, CIOR, CALCQE, NUMANG, XMU, QEXT, QSCA, GQSC, SFORW,
     
     
 def TESTMI( COMPAR, XX, CREFIN, MIMCUT, PERFCT, ANYANG, NMOM, IPOLZN, NUMANG, XMU, QEXT, 
-           QSCA, GQSC, SFORW, SBACK, S1, S2, TFORW, TBACK, PMOM, MOMDIM ):
+            QSCA, GQSC, SFORW, SBACK, S1, S2, TFORW, TBACK, PMOM, MOMDIM ):
     
     """
         Set up to run test case when  COMPAR = False;  when  = True,
@@ -1994,30 +1989,30 @@ def TESTMI( COMPAR, XX, CREFIN, MIMCUT, PERFCT, ANYANG, NMOM, IPOLZN, NUMANG, XM
             OK =  TSTBAD( 'GQSC', abs( ( GQSC - TESTGQ ) / TESTGQ ) )
     
         if WRONG( np.real( SFORW ), np.real( TESTSF ) ) or WRONG( np.imag( SFORW ),
-                     np.imag( TESTSF ) ):
+                  np.imag( TESTSF ) ):
             OK = TSTBAD( 'SFORW', abs( ( SFORW - TESTSF ) / TESTSF ) )
     
         if WRONG( np.real( SBACK ), np.real( TESTSB ) ) or WRONG( np.imag( SBACK ),
-                     np.imag( TESTSB ) ):
+                  np.imag( TESTSB ) ):
             OK = TSTBAD( 'SBACK', abs( ( SBACK - TESTSB ) / TESTSB ) )
     
         if WRONG( np.real( S1[ 0 ] ), np.real( TESTS1 ) ) or WRONG( np.imag( S1[ 0 ] ),
-                     np.imag( TESTS1 ) ):
+                  np.imag( TESTS1 ) ):
             OK = TSTBAD( 'S1', abs( ( S1[ 0 ] - TESTS1 ) / TESTS1 ) )
     
         if WRONG( np.real( S2[ 0 ] ), np.real( TESTS2 ) ) or WRONG( np.imag( S2[ 0 ] ),
-                     np.imag( TESTS2 ) ):
+                  np.imag( TESTS2 ) ):
             OK = TSTBAD( 'S2', abs( ( S2[ 0 ] - TESTS2 ) / TESTS2 ) )
                 
                 
         for N in range( 0, 2 ):
     
             if WRONG( np.real( TFORW[ N ] ), np.real( TESTTF[ N ] ) ) or \
-                    WRONG( np.imag( TFORW[ N ] ), np.imag( TESTTF[ N ] ) ):
+               WRONG( np.imag( TFORW[ N ] ), np.imag( TESTTF[ N ] ) ):
                 OK =  TSTBAD( 'TFORW', abs( ( TFORW[ N ] - TESTTF[ N ] ) / TESTTF[ N ] ) )
                     
             if WRONG( np.real( TBACK[ N ] ), np.real( TESTTB[ N ] ) ) or \
-                    WRONG( np.imag( TBACK[ N ] ), np.imag( TESTTB[ N ] ) ):
+               WRONG( np.imag( TBACK[ N ] ), np.imag( TESTTB[ N ] ) ):
                 OK =  TSTBAD( 'TBACK', abs( ( TBACK[ N ] - TESTTB[ N ] ) / TESTTB[ N ] ) )
                 
                 
@@ -2037,8 +2032,8 @@ def TESTMI( COMPAR, XX, CREFIN, MIMCUT, PERFCT, ANYANG, NMOM, IPOLZN, NUMANG, XM
             CALCMO[ 3 ] = False
     
             return MIPRNT( PRNT, XX, PERFCT, CREFIN, NUMANG, XMU, QEXT, QSCA, GQSC, NMOM, 
-                              IPOLZN, MOMDIM, CALCMO, PMOM, SFORW, SBACK, TFORW, 
-                              TBACK, S1, S2 )
+                           IPOLZN, MOMDIM, CALCMO, PMOM, SFORW, SBACK, TFORW, 
+                           TBACK, S1, S2 )
     
             return ErrMsg( 'MIEV0 -- Self-test failed', True )
     
