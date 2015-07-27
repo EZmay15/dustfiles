@@ -23,7 +23,7 @@ import numpy as np
 
 
 def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM, 
-              PRNT, QEXT, QSCA, GQSC, PMOM, SFORW, SBACK, S1, S2, TFORW, TBACK, SPIKE ):
+           PRNT, QEXT, QSCA, GQSC, PMOM, SFORW, SBACK, S1, S2, TFORW, TBACK, SPIKE ):
     
     """
         NoPMOM version:  saves storage by deleting everything
@@ -453,9 +453,12 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
                 MIPRNT( PRNT, XX, PERFCT, CREFIN, NUMANG, XMU, QEXT, QSCA, GQSC, SFORW,
                         SBACK, TFORW, TBACK, S1, S2 )
             break
-            #end of while loop representing go-to/continue labeled 10 in Fortran code    
+            #end of while loop representing go-to/continue labeled 10 in Fortran code
+               
+    return
             
-            
+
+  
 def CKINMI( NUMANG, MAXANG, XX, PERFCT, CREFIN, NMOM, ANYANG, XMU ):
     
     """     
@@ -539,6 +542,8 @@ def CKINMI( NUMANG, MAXANG, XX, PERFCT, CREFIN, NMOM, ANYANG, XMU ):
     
     if XX > 20000.0 or np.real( CREFIN ) > 10.0 or abs( np.imag( CREFIN ) ) > 10.0:
         ErrMsg( 'MIEV0--XX or CREFIN outside tested range', False )
+
+    return
 
 
 
@@ -679,8 +684,10 @@ def BIGA( CIOR, XX, NTRM, NOABS, YESANG, RBIGA, CBIGA ):
     
             for N in range( 2 - 1, NTRM ):
                 CBIGA[ N ] = - ( (N + 1)*ZINV ) + 1.0 / ( ( (N + 1)*ZINV ) - CBIGA[ N-1 ] )
-              
-            
+
+    return
+
+  
             
 def CONFRA( N, ZINV ):
         
@@ -793,7 +800,9 @@ def CONFRA( N, ZINV ):
             
             else:
                 break
-                   
+
+    return
+
                     
                     
 def MIPRNT( PRNT, XX, PERFCT, CREFIN, NUMANG, XMU, QEXT, QSCA, GQSC, SFORW,
@@ -847,21 +856,23 @@ def MIPRNT( PRNT, XX, PERFCT, CREFIN, NUMANG, XMU, QEXT, QSCA, GQSC, SFORW,
         for I in range( 1 - 1, NUMANG ):
             I1     = np.real( S1[ I ] )**2 + np.imag( S1[ I ] )**2
             I2     = np.real( S2[ I ] )**2 + np.imag( S2[ I ] )**2
-            print  (I + 1), XMU[ I ], S1[ I ], S2[ I ], S1[ I ]*np.conjugate( S2[ I ] ) 
-            print  I1, I2, 0.5*( I1+I2 ), ( I2-I1 )/( I2+I1 )
+            print  (I + 1), XMU[ I ], S1[ I ], S2[ I ], S1[ I ]*np.conjugate( S2[ I ] ), \ 
+                   I1, I2, 0.5*( I1+I2 ), ( I2-I1 )/( I2+I1 )
                     
                     
     if PRNT[ 1 ]:
     
-        print '  Angle', 'S-sub-1', 'T-sub-1', 'T-sub-2',
-        print     0.0,     SFORW,    TFORW[0],  TFORW[1],
-        print    180.,     SBACK,    TBACK[0],  TBACK[1]
+        print '  Angle ', ' S-sub-1', 'T-sub-1', 'T-sub-2',
+        print     0.0 + '  ', SFORW + '  ', TFORW[0] + '  ', TFORW[1] + '  ',
+        print    180. + '  ', SBACK + '  ', TBACK[0] + '  ', TBACK[1] + '  '
              
         print ' Efficiency Factors,  extinction:', QEXT
         print '   scattering:', QSCA
         print '   absorption:', QEXT-QSCA
         print '   rad. pressure:', QEXT-GQSC
-                         
+
+    return
+
                     
                     
 def SMALL1( XX, NUMANG, XMU, QEXT, QSCA, GQSC, SFORW, SBACK, S1, S2, TFORW, TBACK, A, B ):
@@ -950,7 +961,9 @@ def SMALL1( XX, NUMANG, XMU, QEXT, QSCA, GQSC, SFORW, SBACK, S1, S2, TFORW, TBAC
     B[ 0 ] = XX**3 * B[ 0 ]
     B[ 1 ] = XX**3 * B[ 1 ]
              
-        
+    return
+
+    
         
 def SMALL2( XX, CIOR, CALCQE, NUMANG, XMU, QEXT, QSCA, GQSC, SFORW,
             SBACK, S1, S2, TFORW, TBACK, A, B ):
@@ -1048,7 +1061,9 @@ def SMALL2( XX, CIOR, CALCQE, NUMANG, XMU, QEXT, QSCA, GQSC, SFORW,
     B[ 0 ] = XX**3 * B[ 0 ]
     B[ 1 ] = 0. + 0.j
     
-    
+    return
+
+
     
 def TESTMI( COMPAR, XX, CREFIN, MIMCUT, PERFCT, ANYANG, NUMANG, XMU, QEXT, 
             QSCA, GQSC, SFORW, SBACK, S1, S2, TFORW, TBACK ):
@@ -1233,4 +1248,4 @@ def TESTMI( COMPAR, XX, CREFIN, MIMCUT, PERFCT, ANYANG, NUMANG, XMU, QEXT,
         NUMANG = NUMSAV
         XMU[ 0 ] = XMUSAV
         
-
+    return
