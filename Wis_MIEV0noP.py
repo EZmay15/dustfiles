@@ -148,6 +148,9 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
     if PASS1: 
         TESTMI( False, XX, CREFIN, MIMCUT, PERFCT, ANYANG, NUMANG, XMU, QEXT,
                 QSCA, GQSC, SFORW, SBACK, S1, S2, TFORW, TBACK )
+
+        #PRINT CHECKPOINT 1 OF 8 IN MIEV0
+        print MIEV0 CHECKPOINT 1/8
             
     #The while loops serve as the go-to/continues labeled 10 and 100 in the Fortran code
     while True:
@@ -197,8 +200,11 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
                     
                     #The break serves as the go-to/continue labeled 100 in the Fortran code
                     break
-                    
-                        
+
+                
+            #PRINT CHECKPOINT 2 OF 8 IN MIEV0
+            print MIEV0 CHECKPOINT 2/8
+                            
             NANGD2 = ( NUMANG + 1 ) / 2
             YESANG = NUMANG > 0
             
@@ -223,7 +229,10 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
     
             if not PERFCT:
                 BIGA( CIOR, XX, NTRM, NOABS, YESANG, RBIGA, CBIGA )
-                
+
+            #PRINT CHECKPOINT 3 OF 8 IN MIEV0
+            print MIEV0 CHECKPOINT 3/8
+                  
             #Initialize Ricatti-Bessel functions (psi,chi,zeta)-sub-(0,1) for 
             #upward recurrence ( Ref. 1, Eq. 19 )
             XINV   = 1.0 / XX
@@ -268,7 +277,10 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
         
         
     # ---------  LOOP TO SUM MIE SERIES  -----------------------------------
-    
+
+            #PRINT CHECKPOINT 4 OF 8 IN MIEV0
+            print MIEV0 CHECKPOINT 4/8
+            
             MM     = 1.0
             SPIKE  = 1.0
     
@@ -324,7 +336,9 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
                 TBACK[ 0 ] = TBACK[ 0 ] + ( MM * TCOEF )  * ( AN + BN )
                 GQSC       = GQSC + (FN - RN) * np.real( ANM1 * np.conjugate( AN ) + BNM1 * \
                              np.conjugate( BN ) ) + COEFF * np.real( AN * np.conjugate( BN ) )
-    
+                             
+                #PRINT CHECKPOINT 5 OF 8 IN MIEV0
+                print MIEV0 CHECKPOINT 5/8
     
                 if YESANG:
                     #Put Mie coefficients in form needed for computing 
@@ -377,7 +391,9 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
                 PSIN   = np.real( ZETN )
     
     #---------- END LOOP TO SUM MIE SERIES --------------------------------
-    
+
+            #PRINT CHECKPOINT 6 OF 8 IN MIEV0
+            print MIEV0 CHECKPOINT 6/8
     
             QEXT = 2./ XX**2*np.real( SFORW )
     
@@ -421,8 +437,11 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
 
             break
             #end of while loop representing the go-to/continue labeled 100 in the Fortran code
+
             
-                    
+        #PRINT CHECKPOINT 7 OF 8 IN MIEV0
+        print MIEV0 CHECKPOINT 7/8
+                       
         if np.imag( CREFIN ) > 0.0:
             #Take complex conjugates of scattering amplitudes
                 
@@ -454,7 +473,10 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
                         SBACK, TFORW, TBACK, S1, S2 )
             break
             #end of while loop representing go-to/continue labeled 10 in Fortran code
-               
+
+    #PRINT CHECKPOINT 8 OF 8 IN MIEV0
+    print MIEV0 CHECKPOINT 8/8
+    
     return
             
 
