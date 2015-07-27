@@ -150,7 +150,7 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
                 QSCA, GQSC, SFORW, SBACK, S1, S2, TFORW, TBACK )
 
         #PRINT CHECKPOINT 1 OF 8 IN MIEV0
-        print MIEV0 CHECKPOINT 1/8
+        print "MIEV0 CHECKPOINT 1/8"
             
     #The while loops serve as the go-to/continues labeled 10 and 100 in the Fortran code
     while True:
@@ -203,7 +203,7 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
 
                 
             #PRINT CHECKPOINT 2 OF 8 IN MIEV0
-            print MIEV0 CHECKPOINT 2/8
+            print "MIEV0 CHECKPOINT 2/8"
                             
             NANGD2 = ( NUMANG + 1 ) / 2
             YESANG = NUMANG > 0
@@ -231,7 +231,7 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
                 BIGA( CIOR, XX, NTRM, NOABS, YESANG, RBIGA, CBIGA )
 
             #PRINT CHECKPOINT 3 OF 8 IN MIEV0
-            print MIEV0 CHECKPOINT 3/8
+            print "MIEV0 CHECKPOINT 3/8"
                   
             #Initialize Ricatti-Bessel functions (psi,chi,zeta)-sub-(0,1) for 
             #upward recurrence ( Ref. 1, Eq. 19 )
@@ -279,7 +279,7 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
     # ---------  LOOP TO SUM MIE SERIES  -----------------------------------
 
             #PRINT CHECKPOINT 4 OF 8 IN MIEV0
-            print MIEV0 CHECKPOINT 4/8
+            print "MIEV0 CHECKPOINT 4/8"
             
             MM     = 1.0
             SPIKE  = 1.0
@@ -338,7 +338,7 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
                              np.conjugate( BN ) ) + COEFF * np.real( AN * np.conjugate( BN ) )
                              
                 #PRINT CHECKPOINT 5 OF 8 IN MIEV0
-                print MIEV0 CHECKPOINT 5/8
+                print "MIEV0 CHECKPOINT 5/8"
     
                 if YESANG:
                     #Put Mie coefficients in form needed for computing 
@@ -393,7 +393,7 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
     #---------- END LOOP TO SUM MIE SERIES --------------------------------
 
             #PRINT CHECKPOINT 6 OF 8 IN MIEV0
-            print MIEV0 CHECKPOINT 6/8
+            print "MIEV0 CHECKPOINT 6/8"
     
             QEXT = 2./ XX**2*np.real( SFORW )
     
@@ -440,7 +440,7 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
 
             
         #PRINT CHECKPOINT 7 OF 8 IN MIEV0
-        print MIEV0 CHECKPOINT 7/8
+        print "MIEV0 CHECKPOINT 7/8"
                        
         if np.imag( CREFIN ) > 0.0:
             #Take complex conjugates of scattering amplitudes
@@ -475,7 +475,7 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
             #end of while loop representing go-to/continue labeled 10 in Fortran code
 
     #PRINT CHECKPOINT 8 OF 8 IN MIEV0
-    print MIEV0 CHECKPOINT 8/8
+    print "MIEV0 CHECKPOINT 8/8"
     
     return
             
@@ -878,7 +878,7 @@ def MIPRNT( PRNT, XX, PERFCT, CREFIN, NUMANG, XMU, QEXT, QSCA, GQSC, SFORW,
         for I in range( 1 - 1, NUMANG ):
             I1     = np.real( S1[ I ] )**2 + np.imag( S1[ I ] )**2
             I2     = np.real( S2[ I ] )**2 + np.imag( S2[ I ] )**2
-            print  (I + 1), XMU[ I ], S1[ I ], S2[ I ], S1[ I ]*np.conjugate( S2[ I ] ), \ 
+            print  (I + 1), XMU[ I ], S1[ I ], S2[ I ], S1[ I ]*np.conjugate( S2[ I ] ), \
                    I1, I2, 0.5*( I1+I2 ), ( I2-I1 )/( I2+I1 )
                     
                     
