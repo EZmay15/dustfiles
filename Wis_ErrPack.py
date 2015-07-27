@@ -5,6 +5,7 @@
 #Scott Prahl, who had zipped a version of Wiscombe's code and made it
 #downloadable (http://omlc.org/software/mie/)
 
+#Notes:
 #Definitions/specifications for subroutines in the original Fortran file
 #(subroutines -> functions in this Python code) were kept in this code as comments.
 #If output is formatted oddly, the first place to look in this code would be the print
