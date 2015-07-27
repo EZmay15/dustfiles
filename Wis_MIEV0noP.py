@@ -5,7 +5,6 @@
 #included as copies. I found the code on the page "Mie Scattering" by Scott Prahl, who had
 #zipped a version of Wiscombe's code and made it downloadable (http://omlc.org/software/mie/).
 
-
 #Notes:
 #Most for loops in this code loop through calling elements of arrays. Because Fortran
 #arrays are indexed starting from 1 while Python arrays are indexed from 0, I changed
@@ -13,11 +12,12 @@
 #also corrected in this way (ex. XMU[1] -> XMU[0]). Operations that would be affected by these
 #changes have been edited as well (often by adding or subtracting 1).
 #Complex numbers have been changed from Fortran's (0., 0.) format to Python's 0. + 0.j format
-#The original code exclusively used uppercase; any lowercase in this code should be either an
-#intrinsic function from Python, a control flow statement, or a comment.
-#If output is formatted weirdly, the first place to look in this code would be the print
+#Definitions/specifications for subroutines in the original Fortran file
+#(subroutines -> functions in this Python code) were kept in this code as comments.
+#If output is formatted oddly, the first place to look in this code would be the print
 #statements, since those have been converted in the simplest way possible and may have lost
 #some specifications possible with Fortran's "write" statement.
+
 
 import numpy as np
 
@@ -146,8 +146,8 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
     #Save some input variables and replace them with values needed to do the self-test
     
     if PASS1: 
-        return TESTMI( False, XX, CREFIN, MIMCUT, PERFCT, ANYANG, NUMANG, XMU, QEXT,
-                       QSCA, GQSC, SFORW, SBACK, S1, S2, TFORW, TBACK )
+        TESTMI( False, XX, CREFIN, MIMCUT, PERFCT, ANYANG, NUMANG, XMU, QEXT,
+                QSCA, GQSC, SFORW, SBACK, S1, S2, TFORW, TBACK )
             
     #The while loops serve as the go-to/continues labeled 10 and 100 in the Fortran code
     while True:
@@ -156,14 +156,14 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
             
             #Check input and calculate certain variables from input 
             
-            return CKINMI( NUMANG, MAXANG, XX, PERFCT, CREFIN, NMOM, ANYANG, XMU )
+            CKINMI( NUMANG, MAXANG, XX, PERFCT, CREFIN, NMOM, ANYANG, XMU )
             
             
             if PERFCT and XX <= 0.1:
             #Use totally-reflecting small-particle limit   
     
-                return SMALL1( XX, NUMANG, XMU, QEXT, QSCA, GQSC, SFORW, SBACK, 
-                               S1, S2, TFORW, TBACK, LITA, LITB ) 
+                SMALL1( XX, NUMANG, XMU, QEXT, QSCA, GQSC, SFORW, SBACK, 
+                        S1, S2, TFORW, TBACK, LITA, LITB ) 
                 
                 NTRM = 2
                 
@@ -190,8 +190,8 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
                     
                     #Use general-refractive-index small-particle limit ( Ref. 2, p. 1508 )
     
-                    return SMALL2( XX, CIOR, not NOABS, NUMANG, XMU, QEXT, QSCA,
-                                   GQSC, SFORW, SBACK, S1, S2, TFORW, TBACK, LITA, LITB )
+                    SMALL2( XX, CIOR, not NOABS, NUMANG, XMU, QEXT, QSCA,
+                            GQSC, SFORW, SBACK, S1, S2, TFORW, TBACK, LITA, LITB )
                     
                     NTRM = 2
                     
@@ -217,12 +217,12 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
                 
     
             if NTRM + 1 > MAXTRM:
-                return ErrMsg( 'MIEV0--PARAMETER MaxTrm TOO SMALL', True )
+                ErrMsg( 'MIEV0--PARAMETER MaxTrm TOO SMALL', True )
     
             #Calculate logarithmic derivatives of J-Bessel-fcn., A-sub-(1 to NTrm)
     
             if not PERFCT:
-                return BIGA( CIOR, XX, NTRM, NOABS, YESANG, RBIGA, CBIGA )
+                BIGA( CIOR, XX, NTRM, NOABS, YESANG, RBIGA, CBIGA )
                 
             #Initialize Ricatti-Bessel functions (psi,chi,zeta)-sub-(0,1) for 
             #upward recurrence ( Ref. 1, Eq. 19 )
@@ -442,16 +442,16 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
             #Compare test case results with correct answers and abort if bad; 
             #otherwise restore user input and proceed
     
-            return TESTMI( True, XX, CREFIN, MIMCUT, PERFCT, ANYANG, NUMANG, XMU,
-                           QEXT, QSCA, GQSC, SFORW, SBACK, S1, S2, TFORW, TBACK )
+            TESTMI( True, XX, CREFIN, MIMCUT, PERFCT, ANYANG, NUMANG, XMU,
+                    QEXT, QSCA, GQSC, SFORW, SBACK, S1, S2, TFORW, TBACK )
                     
             PASS1 = False
             
             
         else:
             if PRNT[ 0 ] or PRNT[ 1 ]:
-                return MIPRNT( PRNT, XX, PERFCT, CREFIN, NUMANG, XMU, QEXT, QSCA, GQSC, SFORW,
-                               SBACK, TFORW, TBACK, S1, S2 )
+                MIPRNT( PRNT, XX, PERFCT, CREFIN, NUMANG, XMU, QEXT, QSCA, GQSC, SFORW,
+                        SBACK, TFORW, TBACK, S1, S2 )
             break
             #end of while loop representing go-to/continue labeled 10 in Fortran code    
             
@@ -535,10 +535,10 @@ def CKINMI( NUMANG, MAXANG, XX, PERFCT, CREFIN, NMOM, ANYANG, XMU ):
                     
                     
     if INPERR: 
-        return ErrMsg( 'MIEV0--INPUT ERROR(S).  Aborting...', True )
+        ErrMsg( 'MIEV0--INPUT ERROR(S).  Aborting...', True )
     
     if XX > 20000.0 or np.real( CREFIN ) > 10.0 or abs( np.imag( CREFIN ) ) > 10.0:
-        return ErrMsg( 'MIEV0--XX or CREFIN outside tested range', False )
+        ErrMsg( 'MIEV0--XX or CREFIN outside tested range', False )
 
 
 
@@ -753,7 +753,7 @@ def CONFRA( N, ZINV ):
         KOUNT = KOUNT + 1
             
         if KOUNT > MAXIT:
-            return ErrMsg( 'ConFra--Iteration failed to converge', True )
+            ErrMsg( 'ConFra--Iteration failed to converge', True )
     
         #Ref. 2, Eq. 25b
         MM  = - MM
@@ -1219,10 +1219,10 @@ def TESTMI( COMPAR, XX, CREFIN, MIMCUT, PERFCT, ANYANG, NUMANG, XMU, QEXT,
             PRNT[ 0 ] = True
             PRNT[ 1 ] = True
     
-            return MIPRNT( PRNT, XX, PERFCT, CREFIN, NUMANG, XMU, QEXT, QSCA,
+            MIPRNT( PRNT, XX, PERFCT, CREFIN, NUMANG, XMU, QEXT, QSCA,
                            GQSC, SFORW, SBACK, TFORW, TBACK, S1, S2 )
     
-            return ErrMsg( 'MIEV0 -- Self-test failed', True )
+            ErrMsg( 'MIEV0 -- Self-test failed', True )
     
         #Restore user input values
         XX     = XXSAV
