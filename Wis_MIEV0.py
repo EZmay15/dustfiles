@@ -1,3 +1,4 @@
+#USE MIEVOnoP - THIS CODE IS INCOMPLETE.
 
 
 #The original Wiscombe MIEV0 Fortran file is also in the dustfiles repository for
@@ -5,19 +6,6 @@
 #Scott Prahl, who had zipped a version of Wiscombe's code and made it
 #downloadable (http://omlc.org/software/mie/)
 
-
-#Notes:
-#Most for loops in this code loop through calling elements of arrays. Because Fortran
-#arrays are indexed starting from 1 while Python arrays are indexed from 0, I changed
-#many (but not all) loops to begin from 0 instead of 1. Many references to list elements are
-#also corrected in this way (ex. XMU[1] -> XMU[0]). Operations that would be affected by these
-#changes have been edited as well (often by adding or subtracting 1).
-#Complex numbers have been changed from Fortran's (0., 0.) format to Python's 0. + 0.j format
-#The original code exclusively used uppercase; any lowercase in this code should be either an
-#intrinsic function from Python, a control flow statement, or a comment.
-
-
-#Potential pitfalls! (coming soon) 
 
 import numpy as np
 
