@@ -6,11 +6,13 @@
 #downloadable (http://omlc.org/software/mie/)
 
 #Notes:
-#Definitions/specifications for subroutines in the original Fortran file
-#(subroutines -> functions in this Python code) were kept in this code as comments.
+
 #If output is formatted oddly, the first place to look in this code would be the print
 #statements, since those have been converted in the simplest way possible and may have lost
 #some specifications possible with Fortran's "write" statement.
+
+#Intrinsic Fortran functions were all changed to Python functions (either built-in functions or
+#imported from sys).
 
 
 def ErrMsg( MESSAG, FATAL ):

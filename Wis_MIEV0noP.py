@@ -11,12 +11,19 @@
 #many (but not all) loops to begin from 0 instead of 1. Many references to list elements are
 #also corrected in this way (ex. XMU[1] -> XMU[0]). Operations that would be affected by these
 #changes have been edited as well (often by adding or subtracting 1).
+
 #Complex numbers have been changed from Fortran's (0., 0.) format to Python's 0. + 0.j format
-#Definitions/specifications for subroutines in the original Fortran file
-#(subroutines -> functions in this Python code) were kept in this code as comments.
+
 #If output is formatted oddly, the first place to look in this code would be the print
 #statements, since those have been converted in the simplest way possible and may have lost
 #some specifications possible with Fortran's "write" statement.
+
+#Go-to's in the Fortran code were difficult to replicate in Python. I opted to use while True loops,
+#and whenever they appear in the code there should be a comment indicating which go-to from
+#the original Fortran code is being represented.
+
+#Intrinsic Fortran functions were all changed to Python functions (either built-in functions or
+#imported from numpy).
 
 
 import numpy as np
