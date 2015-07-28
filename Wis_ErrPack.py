@@ -41,7 +41,9 @@ def ErrMsg( MESSAG, FATAL ):
     MAXMSG = 100 
     MSGLIM = False
 
-        
+    #PRINT CHECKPOINT 1 OF 2 IN ErrMsg
+    print "ErrMsg CHECKPOINT 1/2"
+         
     if FATAL:
         print '******ERROR***** ', MESSAG
         
@@ -63,7 +65,10 @@ def ErrMsg( MESSAG, FATAL ):
     else:
         print '****** TOO MANY WARNING MESSAGES -- They will no longer be printed *******'
         MSGLIM = True
-            
+
+    #PRINT CHECKPOINT 2 OF 2 IN ErrMsg
+    print "ErrMsg CHECKPOINT 2/2"
+        
     return
 
 
@@ -101,6 +106,9 @@ def WrtBad( VarNam ):
     if NUMMSG == MAXMSG :
         ErrMsg('Too many input errors. Aborting...', True)
 
+    #PRINT CHECKPOINT 1 OF 1 IN WrtBad
+    print "WrtBad CHECKPOINT 1/1"
+        
     return True
 
 
@@ -122,6 +130,9 @@ def WrtDim( DimNam, Minval ):
     """
     
     print '**** Symbolic dimension ', DimNam, ' should be increased to at least ', Minval
+
+    #PRINT CHECKPOINT 1 OF 1 IN WrtDim
+    print "WrtDim CHECKPOINT 1/1"
     
     return True
 
@@ -142,6 +153,9 @@ def TstBad( VarNam, RelErr ):
 
     print '*** Output variable ', VarNam, ' differed by ', 100. * RelErr, \
           ' percent from correct value.  Self-test failed.'
-          
+
+    #PRINT CHECKPOINT 1 OF 1 IN TstBad
+    print "TstBad CHECKPOINT 1/1"
+                
     return False
 
