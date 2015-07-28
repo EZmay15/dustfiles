@@ -536,7 +536,9 @@ def CKINMI( NUMANG, MAXANG, XX, PERFCT, CREFIN, NMOM, ANYANG, XMU ):
     
     if not PERFCT and np.real( CREFIN ) <= 0.:
         INPERR = WRTBAD( 'CREFIN' )
-        
+
+    #PRINT CHECKPOINT 1 OF 2 IN CKINMI
+    print "CKINMI CHECKPOINT 1/2"
         
     if NMOM != 0:
     
@@ -564,6 +566,9 @@ def CKINMI( NUMANG, MAXANG, XX, PERFCT, CREFIN, NMOM, ANYANG, XMU ):
     
     if XX > 20000.0 or np.real( CREFIN ) > 10.0 or abs( np.imag( CREFIN ) ) > 10.0:
         ErrMsg( 'MIEV0--XX or CREFIN outside tested range', False )
+
+    #PRINT CHECKPOINT 2 OF 2 IN CKINMI
+    print "CKINMI CHECKPOINT 2/2"
 
     return
 
@@ -641,7 +646,10 @@ def BIGA( CIOR, XX, NTRM, NOABS, YESANG, RBIGA, CBIGA ):
         3.9 + MRE*( -10.8 + 13.78*MRE )
     def F3( MRE ):
         -15.04 + MRE*( 8.42 + 16.35*MRE )
-    
+
+    #PRINT CHECKPOINT 1 OF 4 IN BIGA
+    print "CKINMI CHECKPOINT 1/4"
+       
     #Decide whether BigA can be calculated by up-recurrence
     MRE = np.real( CIOR )
     MIM = abs( np.imag( CIOR ) )
@@ -671,6 +679,9 @@ def BIGA( CIOR, XX, NTRM, NOABS, YESANG, RBIGA, CBIGA ):
     #Compute initial high-order BigA using Lentz method ( Ref. 1, pp. 17-20 )
     
         CTMP = CONFRA( NTRM, ZINV )
+
+        #PRINT CHECKPOINT 2 OF 4 IN BIGA
+        print "BIGA CHECKPOINT 2/4"
     
         #Downward recurrence for BigA ( Ref. 1, Eq. 22 )
         if NOABS:
@@ -687,7 +698,9 @@ def BIGA( CIOR, XX, NTRM, NOABS, YESANG, RBIGA, CBIGA ):
             for N in range(NTRM - 1, 2 - 1 - 1, -1):
                 CBIGA[ N - 1 ] = ( (N + 1)*ZINV ) - 1.0 / ( ( (N + 1)*ZINV ) + CBIGA[ N ] )
     
-                    
+    #PRINT CHECKPOINT 3 OF 4 IN BIGA
+    print "BIGA CHECKPOINT 3/4"
+                                
     else:
         #Upward recurrence for BigA ( Ref. 1, Eqs. 20-21 )
         if NOABS:
@@ -707,6 +720,9 @@ def BIGA( CIOR, XX, NTRM, NOABS, YESANG, RBIGA, CBIGA ):
             for N in range( 2 - 1, NTRM ):
                 CBIGA[ N ] = - ( (N + 1)*ZINV ) + 1.0 / ( ( (N + 1)*ZINV ) - CBIGA[ N-1 ] )
 
+    #PRINT CHECKPOINT 4 OF 4 IN BIGA
+    print "BIGA CHECKPOINT 4/4"
+    
     return
 
   
@@ -776,6 +792,9 @@ def CONFRA( N, ZINV ):
     CDENOM = CAK
     CNUMER = CDENOM + 1.0 / CONFRA
     KOUNT  = 1
+
+    #PRINT CHECKPOINT 1 OF 3 IN CONFRA
+    print "CONFRA CHECKPOINT 1/3"
     
     #The while loop serves as the go-to/continue labeled 10 in the Fortran code  
     while True:
@@ -804,7 +823,10 @@ def CONFRA( N, ZINV ):
             #Ref. 2, Eqs. 35
             CNUMER = CAK + CNUMER / CNTN
             CDENOM = CAK + CDENOM / CDTD
-            KOUNT  = KOUNT + 1 
+            KOUNT  = KOUNT + 1
+
+        #PRINT CHECKPOINT 2 OF 3 IN CONFRA
+        print "CONFRA CHECKPOINT 2/3"
                 
         else:    
         #Well-conditioned case
@@ -823,6 +845,9 @@ def CONFRA( N, ZINV ):
             else:
                 break
 
+    #PRINT CHECKPOINT 3 OF 3 IN CONFRA
+    print "CONFRA CHECKPOINT 3/3"
+    
     return
 
                     
@@ -868,7 +893,9 @@ def MIPRNT( PRNT, XX, PERFCT, CREFIN, NUMANG, XMU, QEXT, QSCA, GQSC, SFORW,
         print 'Refractive Index:  Real ', np.real( CREFIN ), '  Imag ', np.imag( CREFIN ), \
               ',  Size Parameter =', XX
     
-    
+    #PRINT CHECKPOINT 1 OF 2 IN MIPRNT
+    print "MIPRNT CHECKPOINT 1/2"
+              
     if PRNT[ 0 ] and NUMANG > 0:
     
         print '    cos(angle)  ------- S1 ---------  ------- S2 ---------'
@@ -893,6 +920,9 @@ def MIPRNT( PRNT, XX, PERFCT, CREFIN, NUMANG, XMU, QEXT, QSCA, GQSC, SFORW,
         print '   absorption:', QEXT-QSCA
         print '   rad. pressure:', QEXT-GQSC
 
+    #PRINT CHECKPOINT 2 OF 2 IN MIPRNT
+    print "MIPRNT CHECKPOINT 2/2"
+    
     return
 
                     
@@ -949,7 +979,9 @@ def SMALL1( XX, NUMANG, XMU, QEXT, QSCA, GQSC, SFORW, SBACK, S1, S2, TFORW, TBAC
         
     def SQ( CTMP ):
         np.real( CTMP )**2 + np.imag( CTMP )**2
-    
+
+    #PRINT CHECKPOINT 1 OF 2 IN SMALL1
+    print "SMALL1 CHECKPOINT 1/2"
     
     A[ 0 ] = complex( 0., TWOTHR*( 1. - 0.2*XX**2 ) ) / complex( 1. - 0.5*XX**2, TWOTHR*XX**3 )
     B[ 0 ] = complex( 0., -( 1. - 0.1*XX**2 ) / 3. ) / complex( 1. + 0.5*XX**2, -XX**3 / 3. )
@@ -982,6 +1014,9 @@ def SMALL1( XX, NUMANG, XMU, QEXT, QSCA, GQSC, SFORW, SBACK, S1, S2, TFORW, TBAC
     A[ 1 ] = XX**3 * A[ 1 ]
     B[ 0 ] = XX**3 * B[ 0 ]
     B[ 1 ] = XX**3 * B[ 1 ]
+
+    #PRINT CHECKPOINT 2 OF 2 IN SMALL1
+    print "SMALL1 CHECKPOINT 2/2"
              
     return
 
@@ -1043,7 +1078,9 @@ def SMALL2( XX, CIOR, CALCQE, NUMANG, XMU, QEXT, QSCA, GQSC, SFORW,
     
     def SQ( CTMP ):
         np.real( CTMP )**2 + np.imag( CTMP )**2
-    
+
+    #PRINT CHECKPOINT 1 OF 2 IN SMALL2
+    print "SMALL2 CHECKPOINT 1/2"
         
     CIORSQ = CIOR**2
     CTMP   = complex( 0., TWOTHR )*( CIORSQ - 1. )
@@ -1082,6 +1119,9 @@ def SMALL2( XX, CIOR, CALCQE, NUMANG, XMU, QEXT, QSCA, GQSC, SFORW,
     A[ 1 ] = XX**3 * A[ 1 ]
     B[ 0 ] = XX**3 * B[ 0 ]
     B[ 1 ] = 0. + 0.j
+
+    #PRINT CHECKPOINT 2 OF 2 IN SMALL2
+    print "SMALL2 CHECKPOINT 2/2"
     
     return
 
@@ -1190,7 +1230,9 @@ def TESTMI( COMPAR, XX, CREFIN, MIMCUT, PERFCT, ANYANG, NUMANG, XMU, QEXT,
     
     def WRONG( CALC, EXACT ):
         abs( ( CALC - EXACT ) / EXACT ) > ACCUR
-    
+
+    #PRINT CHECKPOINT 1 OF 3 IN TESTMI
+    print "TESTMI CHECKPOINT 1/3"
     
     if not COMPAR:
         #Save certain user input values
@@ -1239,7 +1281,9 @@ def TESTMI( COMPAR, XX, CREFIN, MIMCUT, PERFCT, ANYANG, NUMANG, XMU, QEXT,
                   np.imag( TESTS2 ) ):
             OK = TSTBAD( 'S2', abs( ( S2[ 0 ] - TESTS2 ) / TESTS2 ) )
                 
-                
+        #PRINT CHECKPOINT 2 OF 3 IN TESTMI
+        print "TESTMI CHECKPOINT 2/3"
+    
         for N in range( 0, 2 ):
     
             if WRONG( np.real( TFORW[ N ] ), np.real( TESTTF[ N ] ) ) or \
@@ -1269,5 +1313,8 @@ def TESTMI( COMPAR, XX, CREFIN, MIMCUT, PERFCT, ANYANG, NUMANG, XMU, QEXT,
         ANYANG = ANYSAV
         NUMANG = NUMSAV
         XMU[ 0 ] = XMUSAV
+
+    #PRINT CHECKPOINT 3 OF 3 IN TESTMI
+    print "TESTMI CHECKPOINT 3/3"
         
     return
