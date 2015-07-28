@@ -1,9 +1,9 @@
 # dustfiles #
 
--Original Fortran files for Wiscombe's Mie scattering algorithms**, including test cases 
--Python translation of the ErrPack and MIEV0noP files
--Draine's dust data tables
--iPython notebook files plotting Mie and Draine values
+-Original Fortran files for Wiscombe's Mie scattering algorithms**, including test cases <br />
+-Python translation of the ErrPack and MIEV0noP files <br />
+-Draine's dust data tables <br />
+-iPython notebook files plotting Mie and Draine values <br />
 
 **Only edits made to the original files are print statements, to be used as checkpoints for debugging
 
