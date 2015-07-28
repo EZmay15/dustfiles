@@ -5,7 +5,8 @@
 -Draine's dust data tables <br />
 -iPython notebook files plotting Mie and Draine values <br />
 
-**Only edits made to the original files are print statements, to be used as checkpoints for debugging
+
+**Only edits made to the original Fortran files are print statements, to be used as checkpoints for debugging
 
 Notes
 -----
