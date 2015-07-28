@@ -10,3 +10,6 @@ Print checkpoints are not necessarily supposed to all show up or appear in the c
 Notes
 -----
 The MIEV0 file is included just in case, since a lot of it has already been translated to Python - however, it is definitely incomplete and needs a fair amount of editing/testing before it's usable.
+
+Subroutines from the original Fortran code have been translated to functions in the Python code.
+Definitions/specifications for all the Fortran subroutines were kept in the Python code in their entirety as comments.
