@@ -21,6 +21,8 @@ c     ..
       SAVE      MAXMSG, NUMMSG, MSGLIM
       DATA      NUMMSG / 0 /,  MAXMSG / 100 /,  MSGLIM /.FALSE./
 
+c     ** PRINT CHECKPOINT 1 OF 2 IN ErrMsg
+      WRITE( *, '(A)' )  'ErrMsg CHECKPOINT 1/2'      
 
       IF( FATAL ) THEN
 
@@ -48,6 +50,8 @@ ccccc    CALL SYMDUMP( '-B -c3' )
          MSGLIM = .True.
       END IF
 
+c     ** PRINT CHECKPOINT 2 OF 2 IN ErrMsg
+      WRITE( *, '(A)' )  'ErrMsg CHECKPOINT 2/2'
 
       RETURN
 
@@ -86,6 +90,9 @@ c     ..
       IF( NUMMSG.EQ.MAXMSG )
      &    CALL ErrMsg( 'Too many input errors.  Aborting...',.TRUE.)
 
+c     ** PRINT CHECKPOINT 1 OF 1 IN WrtBad
+      WRITE( *, '(A)' )  'WrtBad CHECKPOINT 1/1'
+      
       RETURN
       END
 
@@ -108,6 +115,10 @@ c     ..
       WRITE( *, '(3A,I7)' ) ' ****  Symbolic dimension  ', DimNam,
      &                      '  should be increased to at least ', Minval
       WrtDim = .TRUE.
+
+c     ** PRINT CHECKPOINT 1 OF 1 IN WrtDim
+      WRITE( *, '(A)' )  'WrtDim CHECKPOINT 1/1'
+      
       RETURN
       END
 
@@ -126,5 +137,9 @@ c     ..
       WRITE( *, '(/,3A,1P,E11.2,A)' ) ' *** Output variable ', VarNam,
      &   ' differed by ', 100.*RelErr,
      &   ' per cent from correct value.  Self-test failed.'
+
+c     ** PRINT CHECKPOINT 1 OF 1 IN TstBad
+      WRITE( *, '(A)' )  'TstBad CHECKPOINT 1/1'
+      
       RETURN
       END
