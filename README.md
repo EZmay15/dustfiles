@@ -12,7 +12,7 @@ Notes
 -----
 The Python translation of Wiscombe's MIEV0 file is included just in case, since a lot of work has already been done on it - however, it is definitely incomplete and needs a fair amount of editing/testing before it's usable.
 
-Print checkpoints are not necessarily supposed to all show up or appear in the correct order; they're intended as tags that indicate where you are in the code when it's running.
+Print checkpoints are not necessarily supposed to all show up or appear in the correct order; they're intended as tags that indicate where you are in the code as it runs.
 
 Subroutines from the original Fortran code have been translated to functions in the Python code.
 Definitions/specifications for all the Fortran subroutines were kept in the Python code in their entirety as comments.
