@@ -10,7 +10,7 @@
 
 Notes
 -----
-The MIEV0 file is included just in case, since a lot of it has already been translated to Python - however, it is definitely incomplete and needs a fair amount of editing/testing before it's usable.
+The Python translation of Wiscombe's MIEV0 file is included just in case, since a lot of work has already been done on it - however, it is definitely incomplete and needs a fair amount of editing/testing before it's usable.
 
 Print checkpoints are not necessarily supposed to all show up or appear in the correct order; they are more like tags that indicate where you are in the code when it's running.
 
