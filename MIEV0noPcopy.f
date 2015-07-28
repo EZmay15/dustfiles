@@ -122,10 +122,17 @@ c     ..
 c                    ** Save some input variables and replace them
 c                    ** with values needed to do the self-test
 
-      IF( PASS1 ) CALL TESTMI( .FALSE., XX, CREFIN, MIMCUT, PERFCT,
-     &                         ANYANG, NUMANG, XMU, QEXT, QSCA, GQSC,
-     &                         SFORW, SBACK, S1, S2, TFORW, TBACK )
+      IF( PASS1 ) THEN
 
+         CALL TESTMI( .FALSE., XX, CREFIN, MIMCUT, PERFCT,
+     &                ANYANG, NUMANG, XMU, QEXT, QSCA, GQSC,
+     &                SFORW, SBACK, S1, S2, TFORW, TBACK )
+
+c       ** PRINT CHECKPOINT 1 OF 9 IN MIEV0
+        WRITE( *, '(A)' )  'MIEV0 CHECKPOINT 1/9'
+
+      END IF
+      
 c                                        ** Check input and calculate
 c                                        ** certain variables from input
 
@@ -178,7 +185,9 @@ c                                    ** ( Ref. 2, p. 1508 )
 
       END IF
 
-
+c     ** PRINT CHECKPOINT 2 OF 9 IN MIEV0
+      WRITE( *, '(A)' )  'MIEV0 CHECKPOINT 2/9'     
+      
       NANGD2 = ( NUMANG + 1 ) / 2
       YESANG = NUMANG.GT.0
 c                              ** Estimate number of terms in Mie series
@@ -206,6 +215,9 @@ c                            ** J-Bessel-fcn., A-sub-(1 to NTrm)
       IF( .NOT.PERFCT ) CALL BIGA( CIOR, XX, NTRM, NOABS, YESANG, RBIGA,
      &                             CBIGA )
 
+c     ** PRINT CHECKPOINT 3 OF 9 IN MIEV0
+      WRITE( *, '(A)' )  'MIEV0 CHECKPOINT 3/9'
+      
 c                            ** Initialize Ricatti-Bessel functions
 c                            ** (psi,chi,zeta)-sub-(0,1) for upward
 c                            ** recurrence ( Ref. 1, Eq. 19 )
@@ -255,6 +267,9 @@ c                         ** Initialize Mie sums for efficiencies, etc.
 
 c ---------  LOOP TO SUM MIE SERIES  -----------------------------------
 
+c     ** PRINT CHECKPOINT 4 OF 9 IN MIEV0
+      WRITE( *, '(A)' )  'MIEV0 CHECKPOINT 4/9'
+      
       MM     = +1.0
       SPIKE  = 1.0
 
@@ -310,6 +325,10 @@ c                                               ** Flag resonance spikes
      &          SPIKE  = MIN( SPIKE, DENAN, DENBN )
 
          END IF
+
+c        ** PRINT CHECKPOINT 5 OF 9 IN MIEV0
+         WRITE( *, '(A)' )  'MIEV0 CHECKPOINT 5/9'
+         
 c                                  ** Increment Mie sums for non-angle-
 c                                  ** dependent quantities
 
@@ -362,6 +381,9 @@ c                                          ** vectorizable loop
 
             END IF
 
+c        ** PRINT CHECKPOINT 6 OF 9 IN MIEV0
+         WRITE( *, '(A)' )  'MIEV0 CHECKPOINT 6/9'
+            
          END IF
 c                          ** Update relevant quantities for next
 c                          ** pass through loop
@@ -393,6 +415,9 @@ c ---------- END LOOP TO SUM MIE SERIES --------------------------------
          QSCA = 2./ XX**2 * QSCA
          
       END IF
+
+c     ** PRINT CHECKPOINT 7 OF 9 IN MIEV0
+      WRITE( *, '(A)' )  'MIEV0 CHECKPOINT 7/9'
 
       GQSC   = 4./ XX**2 * GQSC
       SFORW = 0.5 * SFORW
@@ -430,7 +455,11 @@ c                                         ** vectorizable loop
       END IF
 
 
-  100 CONTINUE
+ 100  CONTINUE
+
+c     ** PRINT CHECKPOINT 8 OF 9 IN MIEV0
+      WRITE( *, '(A)' )  'MIEV0 CHECKPOINT 8/9'
+      
       IF( AIMAG( CREFIN ).GT.0.0 ) THEN
 c                                         ** Take complex conjugates
 c                                         ** of scattering amplitudes
@@ -469,6 +498,9 @@ c                           ** otherwise restore user input and proceed
      $   CALL  MIPRNT( PRNT, XX, PERFCT, CREFIN, NUMANG, XMU, QEXT,
      $                 QSCA, GQSC, SFORW, SBACK, TFORW, TBACK, S1, S2 )
 
+c     ** PRINT CHECKPOINT 9 OF 9 IN MIEV0
+      WRITE( *, '(A)' )  'MIEV0 CHECKPOINT 9/9'
+      
       RETURN
 
       END
@@ -525,7 +557,9 @@ c     ..
       IF( .NOT.PERFCT .AND. REAL( CREFIN ).LE.0. )
      &    INPERR = WRTBAD( 'CREFIN' )
 
-
+c     ** PRINT CHECKPOINT 1 OF 2 IN CKINMI
+      WRITE( *, '(A)' )  'CKINMI CHECKPOINT 1/2'
+      
       IF( NMOM.NE.0 ) THEN
 
          INPERR = WRTBAD( 'NMOM' )
@@ -564,6 +598,9 @@ c                                ** computation of cosine
      &    CALL ERRMSG( 'MIEV0--XX or CREFIN outside tested range',
      &    .FALSE. )
 
+c     ** PRINT CHECKPOINT 2 OF 2 IN CKINMI
+      WRITE( *, '(A)' )  'CKINMI CHECKPOINT 2/2'
+      
       RETURN
       END
 
@@ -635,6 +672,9 @@ c     .. Statement Function definitions ..
       F3( MRE ) = -15.04 + MRE*( 8.42 + 16.35*MRE )
 c     ..
 
+c     ** PRINT CHECKPOINT 1 OF 4 IN BIGA
+      WRITE( *, '(A)' )  'BIGA CHECKPOINT 1/4'      
+
 c                                  ** Decide whether BigA can be
 c                                  ** calculated by up-recurrence
       MRE = REAL( CIOR )
@@ -666,6 +706,9 @@ c                          ** Lentz method ( Ref. 1, pp. 17-20 )
 
          CTMP = CONFRA( NTRM, ZINV )
 
+c        ** PRINT CHECKPOINT 2 OF 4 IN BIGA
+         WRITE( *, '(A)' )  'BIGA CHECKPOINT 2/4'
+         
 c                                   *** Downward recurrence for BigA
 c                                   *** ( Ref. 1, Eq. 22 )
          IF( NOABS ) THEN
@@ -687,6 +730,8 @@ c                                            ** Absorptive case
 
          END IF
 
+c     ** PRINT CHECKPOINT 3 OF 4 IN BIGA
+      WRITE( *, '(A)' )  'BIGA CHECKPOINT 3/4'
 
       ELSE
 c                              *** Upward recurrence for BigA
@@ -716,6 +761,8 @@ c                                                ** Absorptive case
 
       END IF
 
+c     ** PRINT CHECKPOINT 4 OF 4 IN BIGA
+      WRITE( *, '(A)' )  'BIGA CHECKPOINT 4/4'
 
       RETURN
       END
@@ -781,6 +828,9 @@ c                                      *** Ref. 1, Eqs. 25a, 27
       CNUMER = CDENOM + 1.0 / CONFRA
       KOUNT  = 1
 
+c     ** PRINT CHECKPOINT 1 OF 3 IN CONFRA
+      WRITE( *, '(A)' )  'CONFRA CHECKPOINT 1/3'
+      
    10 CONTINUE
       KOUNT = KOUNT + 1
 
@@ -810,6 +860,10 @@ c                                         *** Ref. 2, Eqs. 35
          CNUMER = CAK + CNUMER / CNTN
          CDENOM = CAK + CDENOM / CDTD
          KOUNT  = KOUNT + 1
+
+c        ** PRINT CHECKPOINT 2 OF 3 IN CONFRA
+         WRITE( *, '(A)' )  'CONFRA CHECKPOINT 2/3'
+         
          GO TO  10
 
       ELSE
@@ -833,7 +887,9 @@ c                                        *** Ref. 2, Eqs. 30A-B
 
       END IF
 
-
+c     ** PRINT CHECKPOINT 3 OF 3 IN CONFRA
+      WRITE( *, '(A)' )  'CONFRA CHECKPOINT 3/3'
+      
       RETURN
 
       END
@@ -878,6 +934,8 @@ c     ..
      &    'Refractive Index:  Real ', REAL( CREFIN ), '  Imag ',
      &    AIMAG( CREFIN ), ',   Size Parameter =', XX
 
+c     ** PRINT CHECKPOINT 1 OF 2 IN MIPRNT
+      WRITE( *, '(A)' )  'MIPRNT CHECKPOINT 1/2'      
 
       IF( PRNT( 1 ) .AND. NUMANG.GT.0 ) THEN
 
@@ -911,7 +969,9 @@ c     ..
 
       END IF
 
-
+c     ** PRINT CHECKPOINT 2 OF 2 IN MIPRNT
+      WRITE( *, '(A)' )  'MIPRNT CHECKPOINT 2/2'
+      
       RETURN
 
       END
@@ -965,7 +1025,9 @@ c     .. Statement Function definitions ..
       SQ( CTMP ) = REAL( CTMP )**2 + AIMAG( CTMP )**2
 c     ..
 
-
+c     ** PRINT CHECKPOINT 1 OF 2 IN SMALL1
+      WRITE( *, '(A)' )  'SMALL1 CHECKPOINT 1/2'
+      
       A( 1 ) = CMPLX( 0., TWOTHR*( 1. - 0.2*XX**2 ) ) /
      &         CMPLX( 1. - 0.5*XX**2, TWOTHR*XX**3 )
 
@@ -1005,6 +1067,9 @@ c                                     ** Recover actual Mie coefficients
       B( 1 ) = XX**3 * B(1)
       B( 2 ) = XX**3 * B(2)
 
+c     ** PRINT CHECKPOINT 2 OF 2 IN SMALL1
+      WRITE( *, '(A)' )  'SMALL1 CHECKPOINT 2/2'
+      
       RETURN
       END
 
@@ -1061,6 +1126,8 @@ c     .. Statement Function definitions ..
       SQ( CTMP ) = REAL( CTMP )**2 + AIMAG( CTMP )**2
 c     ..
 
+c     ** PRINT CHECKPOINT 1 OF 2 IN SMALL2
+      WRITE( *, '(A)' )  'SMALL2 CHECKPOINT 1/2'
 
       CIORSQ = CIOR**2
       CTMP   = CMPLX( 0., TWOTHR )*( CIORSQ - 1.0 )
@@ -1105,6 +1172,9 @@ c                                     ** Recover actual Mie coefficients
       B( 1 ) = XX**3 * B(1)
       B( 2 ) = ( 0., 0.)
 
+c     ** PRINT CHECKPOINT 2 OF 2 IN SMALL2
+      WRITE( *, '(A)' )  'SMALL2 CHECKPOINT 2/2'
+      
       RETURN
       END
 
@@ -1197,6 +1267,8 @@ c     .. Statement Function definitions ..
       WRONG( CALC, EXACT ) = ABS( ( CALC - EXACT ) / EXACT ).GT.ACCUR
 c     ..
 
+c     ** PRINT CHECKPOINT 1 OF 3 IN TESTMI
+      WRITE( *, '(A)' )  'TESTMI CHECKPOINT 1/3'
 
       IF( .NOT.COMPAR ) THEN
 c                                   ** Save certain user input values
@@ -1246,6 +1318,8 @@ c                                    ** correct answers and abort if bad
      &       WRONG( AIMAG( S2( 1 ) ),AIMAG( TESTS2 ) ) )
      &       OK = TSTBAD( 'S2', ABS( ( S2( 1 ) - TESTS2 ) / TESTS2 ) )
 
+c        ** PRINT CHECKPOINT 2 OF 3 IN TESTMI
+         WRITE( *, '(A)' )  'TESTMI CHECKPOINT 2/3'         
 
          DO 10 N = 1, 2
 
@@ -1283,6 +1357,9 @@ c                                       ** Restore user input values
 
       END IF
 
+c     ** PRINT CHECKPOINT 3 OF 3 IN TESTMI
+      WRITE( *, '(A)' )  'TESTMI CHECKPOINT 3/3'
+      
       RETURN
       END
 

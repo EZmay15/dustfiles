@@ -651,7 +651,7 @@ def BIGA( CIOR, XX, NTRM, NOABS, YESANG, RBIGA, CBIGA ):
         -15.04 + MRE*( 8.42 + 16.35*MRE )
 
     #PRINT CHECKPOINT 1 OF 4 IN BIGA
-    print "CKINMI CHECKPOINT 1/4"
+    print "BIGA CHECKPOINT 1/4"
        
     #Decide whether BigA can be calculated by up-recurrence
     MRE = np.real( CIOR )
@@ -676,8 +676,8 @@ def BIGA( CIOR, XX, NTRM, NOABS, YESANG, RBIGA, CBIGA ):
                 
     ZINV   = 1.0 / ( CIOR*XX )
     REZINV = 1.0 / ( MRE*XX )
+
     
-        
     if DOWN:
     #Compute initial high-order BigA using Lentz method ( Ref. 1, pp. 17-20 )
     
@@ -828,8 +828,8 @@ def CONFRA( N, ZINV ):
             CDENOM = CAK + CDENOM / CDTD
             KOUNT  = KOUNT + 1
 
-        #PRINT CHECKPOINT 2 OF 3 IN CONFRA
-        print "CONFRA CHECKPOINT 2/3"
+            #PRINT CHECKPOINT 2 OF 3 IN CONFRA
+            print "CONFRA CHECKPOINT 2/3"
                 
         else:    
         #Well-conditioned case
