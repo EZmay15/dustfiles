@@ -138,6 +138,17 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
     ..
     DATA      PASS1 /.TRUE./
     """
+    
+    MAXANG = 501
+    MXANG2 = MAXANG / 2 + 1 
+    ONETHR = 1. / 3.
+    MAXTRM = 10100
+    RBIGA = []
+    for i in range(MAXTRM):
+        RBIGA.append(0)
+    CBIGA = []
+    for i in range(MAXTRM):
+        CBIGA.append(0)
         
     def SQ( CTMP ):
         np.real( CTMP )**2 + np.imag( CTMP )**2
@@ -652,6 +663,8 @@ def BIGA( CIOR, XX, NTRM, NOABS, YESANG, RBIGA, CBIGA ):
     F3( MRE ) = -15.04 + MRE*( 8.42 + 16.35*MRE )
     ..
     """    
+
+    NTRM = int(NTRM)
     
     def F1( MRE ):
         -8.0 + MRE**2*( 26.22 + MRE*( -0.4474 + MRE**3*( 0.00204 - 0.000175*MRE ) ) )
