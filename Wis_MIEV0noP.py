@@ -704,8 +704,8 @@ def BIGA( CIOR, XX, NTRM, NOABS, YESANG, RBIGA, CBIGA ):
             for N in range(NTRM - 1, 2 - 1 - 1, -1):
                 CBIGA[ N - 1 ] = ( (N + 1)*ZINV ) - 1.0 / ( ( (N + 1)*ZINV ) + CBIGA[ N ] )
     
-    #PRINT CHECKPOINT 3 OF 4 IN BIGA
-    print "BIGA CHECKPOINT 3/4"
+        #PRINT CHECKPOINT 3 OF 4 IN BIGA
+        print "BIGA CHECKPOINT 3/4"
                                 
     else:
         #Upward recurrence for BigA ( Ref. 1, Eqs. 20-21 )
