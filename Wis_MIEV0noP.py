@@ -1,25 +1,24 @@
 
 
 #The original Wiscombe MIEV0noP Fortran file is also in the dustfiles repository for
-#reference/comparison as MIEV0noPcopy.f! MIEV.doc, ErrPack.f, and MIEV0.f have also been
-#included as copies. I found the code on the page "Mie Scattering" by Scott Prahl, who had
-#zipped a version of Wiscombe's code and made it downloadable (http://omlc.org/software/mie/).
+#reference/comparison as MIEV0noPcopy.f! I found the code on the page "Mie Scattering" by
+#Scott Prahl, who had zipped a version of Wiscombe's code and made it
+#downloadable (http://omlc.org/software/mie/).
 
 #Notes:
-#Most for loops in this code loop through calling elements of arrays. Because Fortran
-#arrays are indexed starting from 1 while Python arrays are indexed from 0, I changed
-#many (but not all) loops to begin from 0 instead of 1. Many references to list elements are
+#Most for-loops in this code loop through array elements. Because Fortran
+#arrays are indexed starting from 1 while Python arrays are indexed starting from 0, I changed
+#the necessary loops to begin from 0 instead of 1. Many references to array elements are
 #also corrected in this way (ex. XMU[1] -> XMU[0]). Operations that would be affected by these
 #changes have been edited as well (often by adding or subtracting 1).
 #Complex numbers have been changed from Fortran's (0., 0.) format to Python's 0. + 0.j format.
 #If output is formatted oddly, the first place to look in this code would be the print
-#statements, since those have been converted in the simplest way possible and may have lost
-#some specifications possible with Fortran's "write" statement.
-#Go-to's in the Fortran code were difficult to replicate in Python. I opted to use while True loops,
-#and whenever they appear in the code there should be a comment indicating which go-to from
-#the original Fortran code is being represented.
-#Intrinsic Fortran functions were all changed to Python functions (either built-in functions or
-#imported from numpy).
+#statements, since those may have lost some Fortran formatting specifications in translation.
+#Go-to/continue statements in the Fortran code were difficult to replicate in Python. I opted
+#to use while-loops and breaks; wherever they appear in the code, there should also be a
+#comment indicating which go-to/continue statement from the Fortran code is being represented.
+#Intrinsic Fortran functions were all changed to Python functions (either built-in functions
+#or functions from numpy).
 
 
 import numpy as np
@@ -155,9 +154,10 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
         #PRINT CHECKPOINT 1 OF 9 IN MIEV0
         print "MIEV0 CHECKPOINT 1/9"
             
-    #The while loops serve as the go-to/continues labeled 10 and 100 in the Fortran code
+    #This while loop serves as the continue labeled 10 in the Fortran code
     while True:
-        
+
+        #This while loop sets up the go-to's/continues labeled 100 in the Fortran code
         while True:
             
             #Check input and calculate certain variables from input 
@@ -173,7 +173,7 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
                 
                 NTRM = 2
                 
-                #The break serves as the go-to/continue labeled 100 in the Fortran code
+                #This break serves as the go-to labeled 100 in the Fortran code
                 break
                     
                         
@@ -201,7 +201,7 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
                     
                     NTRM = 2
                     
-                    #The break serves as the go-to/continue labeled 100 in the Fortran code
+                    #This break serves as the go-to labeled 100 in the Fortran code
                     break
 
                 
@@ -369,6 +369,7 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
                         #Angles symmetric about 90 degrees
                         ANPM   = MM * ANP
                         BNPM   = MM * BNP
+                        
                         #vectorizable loop
                         for J in range( 0, NANGD2 ):
                             RTMP = ( XMU[ J ] * PIN[ J ] ) - PINM1[ J ]
@@ -442,7 +443,9 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
                         S2[ NUMANG - J ] = 0.5*( SPS[ J ] - SMS[ J ] )
 
             break
-            #end of while loop representing the go-to/continue labeled 100 in the Fortran code
+            #This break exits the while loop that sets up the go-to's/continues
+            #labeled 100 in the Fortran code
+            #This break also serves as the continue labeled 100 in the Fortran code
 
             
         #PRINT CHECKPOINT 8 OF 9 IN MIEV0
@@ -471,14 +474,18 @@ def MIEV0( XX, CREFIN, PERFCT, MIMCUT, ANYANG, NUMANG, XMU, NMOM, IPOLZN, MOMDIM
                     QEXT, QSCA, GQSC, SFORW, SBACK, S1, S2, TFORW, TBACK )
                     
             PASS1 = False
-            
+
+            #This is an end of the while loop that serves as the continue labeled 10
+            #in the Fortran code
+            #This end serves as the go-to labeled 10 in the Fortran code
             
         else:
             if PRNT[ 0 ] or PRNT[ 1 ]:
                 MIPRNT( PRNT, XX, PERFCT, CREFIN, NUMANG, XMU, QEXT, QSCA, GQSC, SFORW,
                         SBACK, TFORW, TBACK, S1, S2 )
             break
-            #end of while loop representing go-to/continue labeled 10 in Fortran code
+            #This break exits the while loop that serves as the continue
+            #labeled 10 in the Fortran code
 
     #PRINT CHECKPOINT 9 OF 9 IN MIEV0
     print "MIEV0 CHECKPOINT 9/9"
@@ -802,7 +809,7 @@ def CONFRA( N, ZINV ):
     #PRINT CHECKPOINT 1 OF 3 IN CONFRA
     print "CONFRA CHECKPOINT 1/3"
     
-    #The while loop serves as the go-to/continue labeled 10 in the Fortran code  
+    #This while loop serves as the continue labeled 10 in the Fortran code  
     while True:
         KOUNT = KOUNT + 1
             
@@ -813,6 +820,7 @@ def CONFRA( N, ZINV ):
         MM  = - MM
         KK  = KK + 2
         CAK = ( MM*KK ) * ZINV
+            
         #Ref. 2, Eq. 32
         if abs( CNUMER / CAK ) <= EPS1 or abs( CDENOM / CAK ) <= EPS1:
                 
@@ -833,6 +841,10 @@ def CONFRA( N, ZINV ):
 
             #PRINT CHECKPOINT 2 OF 3 IN CONFRA
             print "CONFRA CHECKPOINT 2/3"
+
+            #This is an end of the while loop that serves as the continue labeled 10
+            #in the Fortran code
+            #This end serves as the go-to labeled 10 in the Fortran code
                 
         else:    
         #Well-conditioned case
@@ -847,10 +859,17 @@ def CONFRA( N, ZINV ):
                 #Ref. 2, Eqs. 30A-B
                 CNUMER = CAK + 1.0 / CNUMER
                 CDENOM = CAK + 1.0 / CDENOM
+
+                #This is an end of the while loop that serves as the continue labeled 10
+                #in the Fortran code
+                #This end serves as the go-to labeled 10 in the Fortran code
             
             else:
+                #This break exits the while loop that serves as the continue
+                #labeled 10 in the Fortran code
                 break
 
+            
     #PRINT CHECKPOINT 3 OF 3 IN CONFRA
     print "CONFRA CHECKPOINT 3/3"
     

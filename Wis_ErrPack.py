@@ -3,16 +3,13 @@
 #The original Wiscombe ErrPack Fortran file is also in the dustfiles repository for
 #reference/comparison as ErrPackcopy.f! I found the code on the page "Mie Scattering" by
 #Scott Prahl, who had zipped a version of Wiscombe's code and made it
-#downloadable (http://omlc.org/software/mie/)
+#downloadable (http://omlc.org/software/mie/).
 
 #Notes:
-
 #If output is formatted oddly, the first place to look in this code would be the print
-#statements, since those have been converted in the simplest way possible and may have lost
-#some specifications possible with Fortran's "write" statement.
-
+#statements, since those may have lost some Fortran formatting specifications in translation.
 #Intrinsic Fortran functions were all changed to Python functions (either built-in functions or
-#imported from sys).
+#functions from sys).
 
 
 def ErrMsg( MESSAG, FATAL ):
